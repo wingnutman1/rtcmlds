@@ -1,0 +1,198 @@
+﻿@model CMS_Web.Models.MessageList
+
+
+                                                           
+        <table class="messagesUserMessages">
+          
+            <tr> &nbsp;&nbsp; </tr>
+            @{ var currentDisplayDate = new DateTime(2001,1,1);}
+
+            @if (Model != null)
+            {
+                if (Model.Messages != null)
+                {
+                    if (Model.Messages.Count > 0)
+                    {
+                        foreach (var message in Model.Messages)
+                        {
+                            var messageDayAndMonth = new DateTime(message.sendDate.Year, message.sendDate.Month, message.sendDate.Day);
+                            if (messageDayAndMonth != currentDisplayDate)
+                            {
+                                <tr>
+                                    <td>
+                                        <p class="subtitle fancy"><span>
+                                            @messageDayAndMonth.ToString("ddd d MMMM yyyy")
+                                        </span>
+                                        </p>
+                                    </td>
+                                </tr>
+                                            
+                                currentDisplayDate = messageDayAndMonth;
+                            }
+                                            
+                                            
+                                            
+                            if (message.senderID == WebSecurity.CurrentUserId)
+                            {
+            
+                                <tr >
+                                    <td>
+                                
+                                        <span class="bubble bubble-alt green">
+                                            <span class ="messagetimestamp">
+                                                @message.sendDate.ToString("hh:mm")
+                                            </span>                            
+                                            Me:                                                             
+                                            @Html.DisplayFor(modelItem => message.messageBody)
+                                            <button id="btnDelete" data-messageID = "@message.messageID" data-recipientID = "@message.recieverID">&#9747</button>
+
+                                        </span>
+                                    </td>
+
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr >
+                                    <td>
+                                          <span class="bubble white">
+                                                @{if (!message.messageRead)
+                                                {       
+                                                       <b>
+                                                        <span class ="messagetimestamp">
+                                                            @message.sendDate.ToString("hh:mm")
+                                                        </span>
+                                                        @Html.DisplayFor(modelItem => message.senderFullName)
+                                                        @(": ")
+                                                        @Html.DisplayFor(modelItem => message.messageBody)
+                                                       </b>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class ="messagetimestamp">
+                                                            @message.sendDate.ToString("hh:mm")
+                                                        </span>
+                                                        @Html.DisplayFor(modelItem => message.senderFullName)
+                                                        @(": ")
+                                                        @Html.DisplayFor(modelItem => message.messageBody)
+                                                                                                                                
+                                                    }  
+                                                }
+                                                                                      
+                                                &nbsp;&nbsp;
+                                            
+                                                @{if (!message.messageRead)
+                                                    {                                                        
+                                                        <button id="btnRead" data-messageID = "@message.messageID" data-senderID = "@message.senderID">&#10003</button>
+                                                    }
+                                                }
+                                            </span>                                
+                                    </td> 
+                                </tr>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <p class="subtitle fancy"><span>
+                            No Messages
+                                            </span>
+                        </p>
+                    }                    
+                }
+                else
+                {
+                    <p class="subtitle fancy"><span>
+                        No Messages
+                                        </span>
+                    </p>
+                }
+                
+            }
+            else
+            {
+                <p class="subtitle fancy"><span>
+                    No Messages
+                                    </span>
+                </p>
+            }
+           
+        </table>
+
+<script type="text/javascript">
+        $("button#btnRead").click(function (e) {
+            e.preventDefault();
+
+            
+            var sender = $("#btnRead").attr('data-senderID');
+            var message = $("#btnRead").attr('data-messageID');
+
+            var url = '@Url.Action("MessageRead","Messaging")';
+                
+
+                $("#divNoUser").hide();
+                $("#divResult").hide();
+                $("#divProcessing").show();
+
+                $.post(url, { messageID: message, senderID: sender })
+                    .done(function (data) {
+                        $('#right-pane').html(data);
+                        $("#divProcessing").hide();
+                        $("#divResult").show();
+                        $("messageUserList").click();
+                        var listview = $("#StaffList2").data("kendoListView");
+                        listview.dataSource.read();
+                        
+                    })
+
+                    .fail(function (jqXHR, status, error) {
+                        alert(error + "\r\n" + jqXHR.responseText);
+                        $("#divProcessing").hide();
+                        $("#divResult").show();
+                    });
+
+
+
+
+
+
+            });
+    </script>
+
+<script type="text/javascript">
+    $("button#btnDelete").click(function (e) {
+        e.preventDefault();
+
+
+        var recipient = $("#btnDelete").attr('data-recipientID');
+        var message = $("#btnDelete").attr('data-messageID');
+ 
+        var url = '@Url.Action("MessageDelete","Messaging")';
+
+
+            $("#divNoUser").hide();
+            $("#divResult").hide();
+            $("#divProcessing").show();
+
+        $.post(url, { messageID: message, recipientID: recipient })
+                .done(function (data) {
+                    $('#right-pane').html(data);
+                    $("#divProcessing").hide();
+                    $("#divResult").show();
+
+                })
+
+                .fail(function (jqXHR, status, error) {
+                    alert(error + "\r\n" + jqXHR.responseText);
+                    $("#divProcessing").hide();
+                    $("#divResult").show();
+                });
+
+
+
+
+
+
+        });
+    </script>
+

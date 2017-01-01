@@ -1,0 +1,75 @@
+﻿@model CMS_Web.Models.MESSAGE_DETAILS
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>MESSAGE_DETAILS</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SenderStaff)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SenderStaff)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RecipientStaff)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RecipientStaff)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SendDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SendDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ReadDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReadDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MessageText)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MessageText)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MessageRead)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MessageRead)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.TimeToRead)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TimeToRead)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ReadTimeOut)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReadTimeOut)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

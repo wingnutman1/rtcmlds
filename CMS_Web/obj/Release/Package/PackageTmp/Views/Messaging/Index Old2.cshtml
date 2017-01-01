@@ -1,0 +1,129 @@
+﻿
+@model CMS_Web.Models.MessagingViewModel
+
+@{
+    ViewBag.Title = "Messages";
+}
+
+<h2 class="dataHeader">Messages</h2>
+
+@using (Html.BeginForm())
+{                                        
+    <div class="messagesContainer">
+          
+                <div class="messagesUser">
+                @Html.ListBoxFor( m => m.SelectedUsers, Model.Users, new { size = 10, id="UserList"})
+                <br />
+                <input type="submit" id="btnUsers" name="command" value="Select"/>                               
+
+                    <div class="messagesMessage">                                                              
+                    <p>@Html.DisplayFor(m => m.selectedUserName)</p>
+                    <table class ="messagesTable">
+
+                        @{ var currentDisplayDate = new DateTime(2001,1,1);}
+
+                        @if (Model.displayMessages != null)
+                        {
+                            foreach (var message in Model.displayMessages)
+                            {
+                                var messageDayAndMonth = new DateTime(message.sendDate.Year, message.sendDate.Month, message.sendDate.Day);
+                    
+                                if (messageDayAndMonth != currentDisplayDate)
+                                {
+                                    <tr>
+                                        <td>
+                                            <p class="subtitle fancy"><span>
+                                            @*Draw the date header*@
+                                            @messageDayAndMonth.ToString("ddd d MMMM yyyy")
+                                            </span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                            
+                                    currentDisplayDate = messageDayAndMonth;
+                                }
+                                            
+                                if (message.senderID == WebSecurity.CurrentUserId)
+                                {          
+                                    <tr >
+                                        <td>
+                                            <span class ="messagetimestamp">
+                                            @message.sendDate.ToString("hh:mm")
+                                            </span>
+                                            <span class="bubble bubble-alt green">
+                                                            
+                                            Me:                                                             
+                                            @Html.DisplayFor(modelItem => message.messageBody)
+                                                            
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr >
+                                        <td>
+                                            <span class="bubble white">
+                                            @Html.DisplayFor(modelItem => message.senderFullName)
+                                            :
+                                            @Html.DisplayFor(modelItem => message.messageBody)
+                                            @message.sendDate.ToString("hh:mm")
+
+                                            </span>
+                                        </td> 
+                                    </tr>
+                                }
+                            }
+                        }
+          
+                    </table>
+                </div>
+
+                </div>
+                
+ 
+        <div class="messagesSendNew">
+            @Html.TextBoxFor(m => m.newMessage, new { style="width:800px;" })
+            <input type="submit" id="btnSendNew3" name="command" value="Send" />
+        </div>   
+    </div>
+
+}
+
+
+
+<script>
+    $(document).ready(function() {
+
+                    
+        //$("#vertical").kendoSplitter({
+        //    orientation: "vertical",
+        //    panes: [
+        //        { collapsible: false, resizable: false, size: "82%" }
+                           
+        //    ]
+        //});
+
+        //$("#horizontalNested").kendoSplitter({
+        //    orientation: "vertical",
+        //    panes: [
+        //        { collapsible: false, resizable: false, size: "8%" },
+        //        { collapsible: false, resizable: false }
+        //    ]
+        //});
+
+        //$("#horizontal").kendoSplitter({
+        //    panes: [
+                            
+        //        { collapsible: false, resizable: false, size: "20%" }
+        //    ]
+        //});
+
+                    
+    });
+</script>
+
+
+    
+

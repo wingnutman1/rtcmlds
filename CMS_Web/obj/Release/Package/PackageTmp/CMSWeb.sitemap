@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap>
+  <siteMapNode title="Summary"  description="Summary" controller="Home" action="Index" >
+    
+    <siteMapNode title="Summary"  description="Summary" controller="Home" action="Index" />
+    
+    <siteMapNode title="Exceptions"  description="Exceptions">
+      <siteMapNode title="My Exceptions"  description="My Exceptions">
+        <siteMapNode title="Open Exceptions"  description="Open Exceptions" controller="Exceptions" action="MyOpenExceptions" />
+        <siteMapNode title="Closed Exceptions"  description="Closed Exceptions" controller="Exceptions" action="MyClosedExceptions" />
+      </siteMapNode>
+      <siteMapNode title="My Reports Exceptions"  description="My Reports Exceptions">
+        <siteMapNode title="Open Exceptions"  description="Open Exceptions" controller="Exceptions" action="MyReportsOpenExceptions" />
+        <siteMapNode title="Closed Exceptions"  description="Closed Exceptions" controller="Exceptions" action="MyReportsClosedExceptions" />
+      </siteMapNode>
+      <siteMapNode title="My Teams Exceptions"  description="My Teams Exceptions">
+        <siteMapNode title="Open Exceptions"  description="Open Exceptions" controller="Exceptions" action="MyTeamsOpenExceptions" />
+        <siteMapNode title="Closed Exceptions"  description="Closed Exceptions" controller="Exceptions" action="MyTeamsClosedExceptions" />
+      </siteMapNode>
+      <siteMapNode title="All Exceptions"  description="All Exceptions">
+        <siteMapNode title="Open Exceptions"  description="Open Exceptions" controller="Exceptions" action="AllOpenExceptions" />
+        <siteMapNode title="Closed Exceptions"  description="Closed Exceptions" controller="Exceptions" action="AllClosedExceptions" />
+      </siteMapNode>
+    </siteMapNode>
+
+    <siteMapNode title="Team Status"  description="Team Status" controller="Account" action="TeamStatus" />
+    
+    <siteMapNode title="Messages"  description="Messages" controller="Messaging" action="Index" />
+    
+    <siteMapNode title="Rosters"  description="Rosters">
+      <siteMapNode title="My Roster"  description="My Rosters" controller="Roster" action="MyRoster" />
+      <siteMapNode title="All Rosters"  description="All Rosters" controller="Roster" action="AllRosters" />
+    </siteMapNode>
+  
+    <siteMapNode title="Journals"  description="Journals">
+      <siteMapNode title="Staff"  description="Staff" controller="Journal" action="Staff" />
+      <siteMapNode title="Clients"  description="Clients" controller="Journal" action="Clients" />
+      <siteMapNode title="Sites"  description="Sites" controller="Journal" action="Sites" />
+    </siteMapNode>
+
+    <siteMapNode title="Incidents"  description="Incidents">
+      <siteMapNode title="My Incidents"  description="My Incidents">
+        <siteMapNode title="My Open Incidents"  description="My Open Incidents" controller="Incidents" action="MyOpenIncidents"/>
+        <siteMapNode title="My Closed Incidents"  description="My Open Incidents" controller="Incidents" action="MyClosedIncidents"/>
+      </siteMapNode>
+      <siteMapNode title="Add Incident"  description="Add Incident" controller="Incidents" action="addIncident"/>
+      <siteMapNode title="Open Incidents"  description="Open Incidents" controller="Incidents" action="openIncidents"/>
+      <siteMapNode title="Closed Incidents"  description="Closed Incidents" controller="Incidents" action="ClosedIncidents"/>
+    </siteMapNode>
+
+      <siteMapNode title="ToDoLists"  description="To Do Lists">
+        <siteMapNode title="My ToDo List"  description="My ToDo List" controller="ToDo" action="myToDo"/>
+        <siteMapNode title="My Completed Tasks"  description="My Completed Tasks" controller="ToDo" action="myCompletedTasks"/>
+        <siteMapNode title="Other Staff"  description="Other Staff">
+          <siteMapNode title="Active ToDo Lists"  description="Active ToDo Lists" controller="ToDo" action="StaffActive"/>
+          <siteMapNode title="Completed Tasks"  description="CompletedTasks" controller="ToDo" action="StaffCompletedTasks"/>
+        </siteMapNode>
+        <siteMapNode title="Templates"  description="Templates">
+          <siteMapNode title="Staff"  description="Staff Templates" controller="ToDo" action="StaffTemplate"/>
+          <siteMapNode title="Clients"  description="Client Templates" controller="ToDo" action="ClientTemplate"/>
+          <siteMapNode title="Sites"  description="Site Templates" controller="ToDo" action="SiteTemplate"/>
+        </siteMapNode>
+      </siteMapNode>
+
+      <siteMapNode title="Configuration"  description="Configuration">
+        <siteMapNode title="Staff"  description="Staff">
+          <siteMapNode title="Staff List"  description="Staff List" controller="Account" action="ListUsers" />
+          <siteMapNode title="Staff Teams"  description="Staff Teams" controller="Account" action="StaffTeams" />
+        </siteMapNode>
+        <siteMapNode title="Exception Escalations"  description="Exception Escalations">
+          <siteMapNode title="Escalation Type Configuration"  description="Escalation Type Configuration" controller="ExceptionEscallations" action="ExceptionEscallationsMain" />
+        </siteMapNode>
+        <siteMapNode title="Qualification Types"  description="Qualification Types" controller="Qualifications" action="QualificationTypes"/>
+        <siteMapNode title="Location Configuration"  description="Location Configuration" controller="Locations" action="Index"/>
+        <siteMapNode title="Client Configuration"  description="Client Configuration" controller="Clients" action="Index"/>
+        <siteMapNode title="Incident Type Configuration"  description="Incident Type Configuration" controller="Incidents" action="Types"/>
+        <siteMapNode title="Journal Types Configuration"  description="Journal Types" controller="Journal" action="Types"/>
+        <siteMapNode title="On Call Calendars"  description="On Call Calendars">
+          <siteMapNode title="On Call Calendar Types"  description="On Call Calendar Types" controller="OnCallCalendar" action="onCallCalendars" />
+          <siteMapNode title="On Call Calendar Details"  description="On Call Calendar Details" controller="OnCallCalendar" action="onCallCalendarDetails" />
+        </siteMapNode>
+        <siteMapNode title="System Status"  description="System Status" controller="Configuration" action="SystemStatus"/>
+        <siteMapNode title="Global Settings"  description="Global Settings" controller="Configuration" action="GlobalSettings"/>
+      </siteMapNode>
+
+      <siteMapNode title="Logout"  description="Logout" controller="Home" action="LogOut" />
+    </siteMapNode>
+</siteMap>

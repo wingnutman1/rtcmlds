@@ -1,0 +1,246 @@
+﻿@model IEnumerable<CMS_Web.Models.OnCallCalendarItem>
+
+<p class="dataHeader">On Call Calendar Items</p>
+
+
+@{
+    ViewBag.Title = "On Call Calendar Items";
+}
+
+
+@(Html.Kendo().Notification()
+    .Name("popupNotification")
+)
+
+@using (Html.BeginForm())
+{
+
+    <div id="vertical">
+        <div id="top-pane">
+            <div id="horizontal" style="height: 100%; width: 100%;">
+                <div id="left-pane">
+                    <div class="messagesUserList">
+                        @(Html.Kendo().ListView<CMS_Web.Models.OnCallCalendar>()
+                                .Name("onCallCalendarList")
+                                .TagName("div")
+                                .Navigatable()
+                                .Pageable()
+                                .ClientTemplateId("template")
+                                .Selectable(select => select.Mode(ListViewSelectionMode.Single))
+                                .DataSource(dataSource => dataSource
+                                    .Read(read => read.Action("GetOnCallCalendars", "OnCallCalendar")
+                                    )
+                                )
+                                .Events(e => e
+                                    .Change("onOnCallCalendarChange")
+                                )
+
+                        )
+
+                    </div>
+                </div>
+                <div id="right-pane">
+                        @(Html.Kendo().Grid<CMS_Web.Models.OnCallCalendarItem>()
+                            .Name("onCallCalendarDetails")
+                            .Columns(columns =>
+                            {
+
+                                columns.Bound(p => p.staffID).Title("staffID").Hidden();
+                                columns.ForeignKey(p => p.staffID, (System.Collections.IEnumerable)ViewData["UserProfiles"], "UserID", "FullName").Title("Staff Member");
+                                columns.Bound(p => p.dateStart).Title("Start Date").ClientTemplate("#= kendo.toString(dateStart, \"dd/MM/yy\") #");
+                                columns.Bound(p => p.dateEnd).Title("End Date").ClientTemplate("#= kendo.toString(dateEnd, \"dd/MM/yy\") #");
+                                columns.Bound(p => p.timeStart).Title("Start Time").ClientTemplate("#= kendo.toString(timeStart, \"HH:mm tt\") #");
+                                columns.Bound(p => p.timeEnd).Title("End Time").ClientTemplate("#= kendo.toString(timeEnd, \"HH:mm tt\") #");
+                                columns.Command(c => c.Edit());
+                                columns.Command(c => c.Destroy());
+                            })
+                            .ToolBar(toolbar => toolbar.Create())
+                            .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("OnCallCalendarItemEditor"))
+                            .Pageable()
+                            .Sortable()
+                            .Scrollable()
+                            .Filterable()
+                            .HtmlAttributes(new { style = "height:99%;" })
+                            .DataSource(dataSource => dataSource.Ajax()
+                                .Model(model => model.Id(p => p.ID))
+                                .Read(read => read.Action("GetOnCallCalendarDetails", "OnCallCalendar").Data("selectedCalendar"))
+                                .Create(update => update.Action("onCallCalendarItemsEditingInline_Create", "OnCallCalendar").Data("selectedCalendar"))
+                                .Update(update => update.Action("onCallCalendarItemsEditingInline_Update", "OnCallCalendar").Data("selectedCalendar"))
+                                .Destroy(update => update.Action("onCallCalendarItemsEditingInline_Destroy", "OnCallCalendar"))
+                            )
+                            .Resizable(resize => resize.Columns(true))
+                        )
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<style scoped>
+    #vertical {
+        height: 600px;
+        width: 1000px;
+        margin: 0 auto;
+    }
+
+    .rootfolder {
+        background-position: 0 0;
+    }
+
+    .folder {
+        background-position: 0 -16px;
+    }
+
+    .pdf {
+        background-position: 0 -32px;
+    }
+
+    .html {
+        background-position: 0 -48px;
+    }
+
+    .image {
+        background-position: 0 -64px;
+    }
+
+    #middle-pane {
+        background-color: rgba(60, 70, 80, 0.10);
+    }
+
+    #bottom-pane {
+        background-color: rgba(60, 70, 80, 0.15);
+    }
+
+    #left-pane, #center-pane, #right-pane {
+        background-color: rgba(60, 70, 80, 0.05);
+    }
+
+    .pane-content {
+        padding: 10px 10px;
+    }
+</style>
+}
+
+@section Scripts {
+
+    <script type="text/x-kendo-tmpl" id="template">
+        <div class="listViewFormat">
+            #= Description#
+                </div>
+    </script>
+
+<!--Reference the SignalR library. -->
+<script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+<!--Reference the autogenerated SignalR hub script. -->
+<script src="/signalr/hubs"></script>
+
+<script>
+        function selectedCalendar() {
+
+            var list = $("#onCallCalendarList").data("kendoListView");
+            if (list != null) {
+                var index = list.select().index();
+                if (index != -1) {
+                    var dataItem = list.dataSource.view()[index];
+                    var user = dataItem.ID;
+                    return {
+                        selectedCalendar: user
+                    };
+                }
+                else
+                    return {
+                        selectedCalendar: 0
+                    };
+            }
+            else
+                return {
+                    selectedCalendar: 0
+                };
+        }
+
+        $(document).ready(function () {
+
+
+            var messageHub = $.connection.messageHub;
+            var userName = "@HttpContext.Current.User.Identity.Name";
+
+            $.connection.hub.qs = { 'userName': userName };
+            var popupNotification = $("#popupNotification").data("kendoNotification");
+
+            if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+                $.connection.hub.start().done(function () {//when the connection is ready,
+
+                    popupNotification.show("Server Connection Established");
+                });
+            }
+
+            messageHub.client.send = function (message) {
+                if (message.messageType == "PM")
+                    popupNotification.show(message.message);
+            };
+
+
+        });
+
+</script>
+
+<script>
+
+    function onOnCallCalendarChange() {
+
+        var gridview = $("#onCallCalendarDetails").data("kendoGrid");
+            gridview.dataSource.read();
+            return;
+        }
+
+        function onUpdate() {
+            alert("Sorry, you cannot edit this entry");
+            var gridview = $("#onCallCalendarDetails").data("kendoGrid");
+            gridview.dataSource.read();
+            return;
+
+        }
+</script>
+
+
+
+
+<script type="text/javascript">
+
+        $(document).ready(function () {
+
+
+            // Hide the "busy" Gif at load:
+            $("#divProcessing").hide();
+            $("#divResult").hide();
+
+            var popupNotification = $("#popupNotification").data("kendoNotification");
+
+        });
+
+
+
+        $("#vertical").kendoSplitter({
+            orientation: "vertical",
+            panes: [
+                { collapsible: false, resizable: false }, // Controls parent vertical pane
+                { collapsible: false, size: "100px" }, //Controls bottom pane
+            ]
+        });
+
+        $("#horizontal").kendoSplitter({
+            panes: [
+                { collapsible: true, size: "20%" },
+                { collapsible: true, size: "70%" }
+            ]
+        });
+
+
+</script>
+
+
+}
+
+

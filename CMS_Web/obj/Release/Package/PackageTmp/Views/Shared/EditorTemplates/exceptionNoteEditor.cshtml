@@ -1,0 +1,14 @@
+﻿@model CMS_Web.Models.ExceptionNote
+
+@(Html.HiddenFor(model => model.ID))
+@(Html.HiddenFor(model => model.ParentID))
+@(Html.HiddenFor(model => model.CreationStaffID))
+@(Html.HiddenFor(model => model.LastEditStaffID))
+@(Html.HiddenFor(model => model.NoteDate))
+@(Html.HiddenFor(model => model.EditDate))
+@(Html.HiddenFor(model => model.Deleted))
+
+<div class="k-edit-label">Exception Note : </div>
+<div class="k-edit-field">
+    <input name="NoteText" required class="k-textbox" />
+</div>

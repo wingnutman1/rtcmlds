@@ -1,0 +1,32 @@
+﻿@model IEnumerable<CMS_Web.Models.RosterModel>
+
+    <table class="dataRowHeader">
+
+        @(Html.Kendo().Scheduler<CMS_Web.Models.RosterModel>()
+                .Name("scheduler")
+                .Editable(true)
+                
+                .Height(600)
+                .BindTo(Model)
+                .MajorTick(120)
+                .Events( e => 
+                {
+                    e.Change("schedulerChange");
+                })
+        )
+
+
+
+           
+    </table>
+
+<script>
+
+    function schedulerChange(e) {
+
+        var startDate = e.startDate;
+        var endDate = e.endDate;
+    }
+
+</script>
+

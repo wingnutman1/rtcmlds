@@ -1,0 +1,88 @@
+﻿@model CMS_Web.Models.ToDoListRecurringItem
+
+@(Html.HiddenFor(model => model.ID))
+
+<div><span class="k-edit-label">Task :</span>
+    <span class="k-edit-field">
+        <input name="Task" required class="k-textbox"/>
+        </span>
+</div>
+
+<div><span class="k-edit-label">Client :</span>
+@(Html.Kendo().DropDownListFor(m => m.ClientID)
+            .Name("ClientID")
+            .DataValueField("ID")
+            .DataTextField("Name")
+            .OptionLabel("-")
+            .DataSource(source =>
+            {
+                source.Custom()
+                        .ServerFiltering(true)
+                        .Type("aspnetmvc-ajax") //Set this type if you want to use DataSourceRequest and ToDataSourceResult instances.
+                        .Transport(transport =>
+                        {
+                            transport.Read("getClientFullName", "ToDo");
+                        })
+                        .Schema(schema =>
+                        {
+                            schema.Data("Data") //define the [data](http://docs.telerik.com/kendo-ui/api/javascript/data/datasource#configuration-schema.data) option
+                                .Total("Total"); //define the [total](http://docs.telerik.com/kendo-ui/api/javascript/data/datasource#configuration-schema.total) option
+                        });
+
+            })
+        .HtmlAttributes(new { style = "margin-left:23px; margin-top:0px", data_value_primitive = "true" })
+        .AutoBind(true)
+        )
+</div>
+<div><span class="k-edit-label">Site :</span>
+@(Html.Kendo().DropDownListFor(m => m.SiteID)
+        .Name("SiteID")
+        .DataValueField("ID")
+        .DataTextField("Name")
+        .OptionLabel("-")
+        .DataSource(source =>
+        {
+            source.Custom()
+                    .ServerFiltering(true)
+                    .Type("aspnetmvc-ajax") //Set this type if you want to use DataSourceRequest and ToDataSourceResult instances.
+                    .Transport(transport =>
+                    {
+                        transport.Read("getSites", "ToDo");
+                    })
+                    .Schema(schema =>
+                    {
+                        schema.Data("Data") //define the [data](http://docs.telerik.com/kendo-ui/api/javascript/data/datasource#configuration-schema.data) option
+                            .Total("Total"); //define the [total](http://docs.telerik.com/kendo-ui/api/javascript/data/datasource#configuration-schema.total) option
+                    });
+        })
+    .HtmlAttributes(new { style = "margin-left:23px; margin-top:0px", data_value_primitive = "true" })
+    .AutoBind(true)
+    )
+</div>
+@*<div><span class="k-edit-label">Day of Week:</span>
+    @(Html.Kendo().DropDownListFor(m => m.DayOfWeek)
+        .Name("DayOfWeek")
+        .OptionLabel("-")
+        .BindTo(Enum.GetNames(typeof(DayOfWeek)).ToList())
+        .HtmlAttributes(new { style = "margin-left:23px; margin-top:8px", data_value_primitive = "true" })
+        
+    )
+</div>*@
+<div>
+    <span class="k-edit-label">Auto Generate:</span>
+    @(Html.Kendo().CheckBoxFor(m => m.AutoGenerateEvent)
+            .Name("AutoGenerateEvent")
+            .HtmlAttributes(new { style = "margin-left:23px; margin-top:20px", data_value_primitive = "true" })
+    )
+</div>
+
+<div>
+    <span class="k-edit-label">Time to complete :</span>
+    @(Html.Kendo().TimePickerFor(m => m.TimeToComplete)
+        .Name("TimeToComplete")
+        .HtmlAttributes(new { style = "margin-left:23px; margin-top:8px", data_value_primitive = "true" })
+    )
+</div>
+
+
+

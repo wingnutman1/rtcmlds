@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="RTCMLDS" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\john\\Google\ Drive\\LDS\\CMS\\Development\\CMS_Web\\CMS_Web\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^C:\\Users\\john\\Google\ Drive\\LDS\\CMS\\Development\\CMS_Web\\CMS_Web\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="CMS_WebContext-Web.config Connection String" description="" value="Data Source=tcp:rtcmlds.database.windows.net,1433;Initial Catalog=RTCMLDS;User Id=jlenigas@sistemosgroup.com@rtcmlds.database.windows.net;Password=J0hn4rtcmlds" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\john\\Google\ Drive\\LDS\\CMS\\Development\\CMS_Web\\CMS_Web\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='CMS_WebContext']/@connectionString" />
+  </parameter>
+  <parameter name="LDS_RosterContext-Web.config Connection String" description="" value="Data Source=tcp:rtcmlds.database.windows.net,1433;Initial Catalog=RTCMLDS;User Id=jlenigas@sistemosgroup.com@rtcmlds.database.windows.net;Password=J0hn4rtcmlds" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\john\\Google\ Drive\\LDS\\CMS\\Development\\CMS_Web\\CMS_Web\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='LDS_RosterContext']/@connectionString" />
+  </parameter>
+</parameters>

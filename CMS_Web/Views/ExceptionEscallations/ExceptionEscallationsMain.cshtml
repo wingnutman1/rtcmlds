@@ -1,0 +1,254 @@
+﻿
+@{
+    ViewBag.Title = "Exception Escallations";
+}
+
+<p class="dataHeader">Exception Escallations</p>
+
+
+
+
+@(Html.Kendo().Notification()
+    .Name("popupNotification")
+)
+
+  
+
+@using (Html.BeginForm())
+{
+
+    <div id="vertical">
+        <div id="top-pane">
+            <div id="horizontal" style="height: 100%; width: 100%;">
+                <div id="left-pane">
+                        <div class="messagesUserList">
+                        @(Html.Kendo().Grid<CMS_Web.Models.ExceptionEscallation>()
+                            .Name("exceptionEscallation")
+                            .Columns(columns => {
+                                columns.Bound(p => p.Description).Title("Description").Width(50);
+                                columns.Command(c => c.Edit().Text(" ")).Width(30);
+                                columns.Command(c => c.Custom("Delete").Text("X").Click("onDestroyRequest")).Width(30);
+                            })
+                            .ToolBar(toolbar => toolbar.Create())
+                            .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("EscalationName"))
+                            .Selectable()
+                            .Pageable()
+                            .Sortable()
+                            .Scrollable()
+                            .Filterable()
+                            .HtmlAttributes(new { style = "height:600px;" })
+                            .DataSource(dataSource => dataSource.Ajax()
+                                .Model(model => model.Id(p => p.ID))
+                                .Read(read => read.Action("GetEscallations", "ExceptionEscallations"))
+                                .Create(update => update.Action("escallationsEditingInline_Create", "ExceptionEscallations"))
+                                .Update(update => update.Action("escallationsEditingInline_Update", "ExceptionEscallations"))
+                            )
+                            .Resizable(resize => resize.Columns(true))
+                            .Events(e =>
+                            {
+                                e.Change("onEscallationSelect");
+                                e.Remove("onDestroyRequest");
+                            })
+                            )                        
+                        </div>
+                    </div>                        
+                <div id="right-pane">
+                    @(Html.Kendo().Grid<CMS_Web.Models.ExceptionEscallationDetail>()
+                        .Name("exceptionEscallationDetail")
+                        .Columns(columns => {
+                            columns.Bound(p => p.EscallationDetailDescription).Title("Note").Width("20%");
+                            columns.ForeignKey(p => p.NextStaffID, (System.Collections.IEnumerable)ViewData["staff"], "Value", "Text").Title("Next Staff").Width("15%");
+                            columns.Bound(p => p.Position).Title("Pos").Width("10%");
+                            columns.Bound(p => p.HoursDelayBeforeEscallation).Title("Hrs").Width("10%");
+                            columns.Bound(p => p.MinutesDelayBeforeEscallation).Title("Min").Width("10%");
+                            columns.Bound(p => p.ParentID).Visible(false);
+                            columns.Bound(p => p.ID).Visible(false);
+                            columns.Command(c => c.Edit().Text(" ")).Width("12%");
+                            columns.Command(c => c.Destroy().Text(" ")).Width("12%");
+                        })
+                        .ToolBar(toolbar => toolbar.Create())
+                        .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("EscalationDetail"))
+                        .Pageable()
+                        .Sortable()
+                        .Scrollable()
+                        .Filterable()
+                        .HtmlAttributes(new { style = "height:580px;" })
+                        .DataSource(dataSource => dataSource.Ajax()
+                            .Model(model => model.Id(p => p.ID))
+                            .Read(read => read.Action("GetEscallationDetails", "ExceptionEscallations").Data("selectedEscallations"))
+                            .Create(update => update.Action("escallationDetailsEditingInline_Create" , "ExceptionEscallations").Data("selectedEscallations"))
+                            .Update(update => update.Action("escallationDetailsEditingInline_Update" , "ExceptionEscallations").Data("selectedEscallations"))
+                            .Destroy(update => update.Action("escallationDetailsEditingInline_Destroy" , "ExceptionEscallations"))
+                        )
+                        .Resizable(resize => resize.Columns(true))
+                    )
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @(Html.Kendo().Dialog()
+        .Name("deleteEscallation")
+        .Visible(false)
+        .Title("Delete?")
+        .Width(300)
+        .Height(200)
+        .Modal(false)
+        .Closable(true)
+        .Actions(actions =>
+        {
+            actions.Add().Text("Cancel");
+            actions.Add().Text("Delete").Action("onDelete").Primary(true);
+        })
+    )
+
+}
+
+
+
+
+ 
+
+    <style scoped>
+        #vertical {
+            height: 600px;
+            width: 1000px;
+            margin: 0 auto;
+        }
+
+        .rootfolder { background-position: 0 0; }
+        .folder { background-position: 0 -16px; }
+        .pdf { background-position: 0 -32px; }
+        .html { background-position: 0 -48px; }
+        .image { background-position: 0 -64px; }
+       
+        #middle-pane { background-color: rgba(60, 70, 80, 0.10); }
+        #bottom-pane { background-color: rgba(60, 70, 80, 0.15); }
+        #left-pane, #center-pane, #right-pane  { background-color: rgba(60, 70, 80, 0.05); }
+
+        .pane-content {
+            padding: 5px 5px;
+        }
+
+
+    </style>
+}
+     
+ <!--Reference the SignalR library. -->
+<script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+<!--Reference the autogenerated SignalR hub script. -->
+<script src="/signalr/hubs"></script>
+
+<script>
+
+  
+    function onDelete(e) {
+        var se = selectedEscallations();
+        window.location.href = '@Url.Action("escallationsDelete", "ExceptionEscallations")/' + se.escallationID;
+    }
+
+    function onDestroyRequest(e) {
+        $("#deleteEscallation").data("kendoDialog").content("<span style=\"font-size:larger\">Delete Exception Escallation : " + selectedEscallationName() + "?</span>");
+        if (selectedEscallationName() != "")
+            $("#deleteEscallation").data("kendoDialog").open();
+    }
+
+    function selectedEscallations() {
+
+        var list = $("#exceptionEscallation").data("kendoGrid");
+        if (list != null) {
+            var index = list.select().index();
+            if (index != -1) {
+                var dataItem = list.dataSource.view()[index];
+                var escallation = dataItem.ID;
+                return {
+                    escallationID: escallation
+                };
+            }
+            else
+                return {
+                    escallationID: 0
+                };
+        }
+        else
+            return {
+                escallationID: 0
+            };
+    }
+
+    function selectedEscallationName() {
+
+        var list = $("#exceptionEscallation").data("kendoGrid");
+        if (list != null) {
+            var index = list.select().index();
+            if (index != -1) {
+                var dataItem = list.dataSource.view()[index];
+                var escallation = dataItem.Description;
+                return escallation;
+            }
+            else
+                return "";
+        }
+        else
+            return "";
+    }
+
+    function onEscallationSelect() {
+
+        var gridview = $("#exceptionEscallationDetail").data("kendoGrid");
+        gridview.dataSource.read();
+        return;
+    }
+
+
+    $(document).ready(function () {
+
+
+        var messageHub = $.connection.messageHub;
+        var userName = "@HttpContext.Current.User.Identity.Name";
+
+        $.connection.hub.qs = { 'userName': userName };
+        var popupNotification = $("#popupNotification").data("kendoNotification");
+
+        if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+            $.connection.hub.start().done(function () {//when the connection is ready,
+
+                popupNotification.show("Server Connection Established");
+            });
+        }
+
+        messageHub.client.send = function (message) {
+            if (message.messageType == "PM")
+                popupNotification.show(message.message);
+        };
+
+
+    });
+
+
+
+    $("#vertical").kendoSplitter({
+        orientation: "vertical",
+        panes: [
+            { collapsible: false, resizable: false }, // Controls parent vertical pane
+            { collapsible: false, size: "100px" }, //Controls bottom pane
+        ]
+    });
+
+    $("#horizontal").kendoSplitter({
+        panes: [
+            { collapsible: true, size: "35%" },
+            { collapsible: true, size: "65%" }
+        ]
+    });
+
+
+</script>
+
+
+
+    
+
+
+
+

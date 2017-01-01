@@ -1,0 +1,236 @@
+﻿
+@model IEnumerable<CMS_Web.Models.JournalEntry>
+
+@{
+    ViewBag.Title = "Site Journals";
+}
+
+<p class="dataHeader">Site Journals</p>
+
+
+@(Html.Kendo().Notification()
+    .Name("popupNotification")
+)
+
+@using (Html.BeginForm())
+{
+
+    <div id="vertical">
+        <div id="top-pane">
+            <div id="horizontal" style="height: 100%; width: 100%;">
+                <div id="left-pane">
+                        <div class="messagesUserList">
+                            @(Html.Kendo().ListView<CMS_Web.ViewModels.clientSelectorModel>()
+                                .Name("siteList")
+                                .TagName("div")
+                                .Navigatable()
+                                .Pageable()
+                                .ClientTemplateId("template")
+                                .Selectable(select => select.Mode(ListViewSelectionMode.Single))
+                                .DataSource(dataSource => dataSource
+                                    .Read(read => read.Action("getSites", "Journal")
+                                    )
+                                )
+                                .Events(e => e
+                                    .Change("onSiteSelect")
+                                )
+                                
+                            )
+
+                        </div>
+                    </div>                        
+                <div id="right-pane">
+                    @if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        @(Html.Kendo().Grid<CMS_Web.ViewModels.journalViewModel>()    
+                            .Name("siteJournalGrid")
+                            .Columns(columns => {
+                                columns.Bound(p => p.note).Title("Note").Width(200);
+                                columns.ForeignKey(p => p.typeID, (System.Collections.IEnumerable)ViewData["types"], "Value", "Text").Title("Type").Width(60);
+                                columns.Bound(p => p.creationDate).Visible(false);
+                                columns.Command(c => c.Edit()).Width(40);
+                                columns.Command(c => c.Destroy()).Width(40);
+                            })
+                            .ToolBar(toolbar => toolbar.Create())
+                            .Editable(editable => editable.Mode(GridEditMode.InLine))
+                            .Pageable()
+                            .Sortable()
+                            .Scrollable()
+                            .Filterable()
+                            .HtmlAttributes(new { style = "height:99%;" })
+                            .DataSource(dataSource => dataSource.Ajax()
+                                .Model(model => model.Id(p => p.ID))
+                                .Read(read => read.Action("GetSiteJournals", "Journal").Data("selectedSite"))
+                                .Create(update => update.Action("siteEditingInline_Create" , "Journal").Data("selectedSite"))
+                                .Update(update => update.Action("siteEditingInline_Update" , "Journal").Data("selectedSite"))
+                                .Destroy(update => update.Action("siteEditingInline_Destroy" , "Journal"))
+                            )
+                            .Resizable(resize => resize.Columns(true))
+                        )
+                    }
+                    else
+                    {
+                        @(Html.Kendo().Grid<CMS_Web.ViewModels.journalViewModel>()    
+                            .Name("siteJournalGrid")
+                            .Columns(columns => {
+                                columns.Bound(p => p.note).Title("Note").Width(200);
+                                columns.ForeignKey(p => p.typeID, (System.Collections.IEnumerable)ViewData["types"], "Value", "Text").Title("Type").Width(60);
+                                columns.Command(c => c.Edit()).Width(40);
+                            })
+                            .ToolBar(toolbar => toolbar.Create())
+                            .Editable(editable => editable.Mode(GridEditMode.InLine))
+                            .Pageable()
+                            .Sortable()
+                            .Scrollable()
+                            .Filterable()
+                            .HtmlAttributes(new { style = "height:99%;" })
+                            .DataSource(dataSource => dataSource.Ajax()
+                                .Model(model => model.Id(p => p.ID))
+                                .Read(read => read.Action("GetSiteJournals", "Journal").Data("selectedSite"))
+                                .Create(create => create.Action("siteEditingInline_Create" , "Journal").Data("selectedSite"))
+                                .Update(update => update.Action("siteEditingInline_NoEdit" , "Journal").Data("selectedSite"))
+                            )
+                            .Resizable(resize => resize.Columns(true))
+                        )                        
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+}
+
+
+
+
+ 
+
+    <style scoped>
+        #vertical {
+            height: 600px;
+            width: 1000px;
+            margin: 0 auto;
+        }
+
+        .rootfolder { background-position: 0 0; }
+        .folder { background-position: 0 -16px; }
+        .pdf { background-position: 0 -32px; }
+        .html { background-position: 0 -48px; }
+        .image { background-position: 0 -64px; }
+       
+        #middle-pane { background-color: rgba(60, 70, 80, 0.10); }
+        #bottom-pane { background-color: rgba(60, 70, 80, 0.15); }
+        #left-pane, #center-pane, #right-pane  { background-color: rgba(60, 70, 80, 0.05); }
+
+        .pane-content {
+            padding: 10px 10px;
+        }
+
+
+    </style>
+}
+     
+<!--Reference the SignalR library. -->
+<script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+<!--Reference the autogenerated SignalR hub script. -->
+<script src="/signalr/hubs"></script>
+
+<script type="text/x-kendo-tmpl" id="template">
+    <div class="listViewFormat">
+            #= Name# 
+    </div>
+</script>
+
+    <script>
+        function selectedSite() {
+
+            var list = $("#siteList").data("kendoListView");
+            if (list != null) {
+                var index = list.select().index();
+                if (index != -1) {
+                    var dataItem = list.dataSource.view()[index];
+                    var user = dataItem.ID;
+                    return {
+                        siteID: user
+                    };
+                }
+                else
+                    return {
+                        siteID: 0
+                    };
+            }
+            else
+                return {
+                    siteID: 0
+                };
+        }
+
+    </script>
+
+    <script>
+
+        function onSiteSelect() {
+
+            var gridview = $("#siteJournalGrid").data("kendoGrid");
+            gridview.dataSource.read();
+            return;
+        }
+
+        function onUpdate() {
+            alert("Sorry, you cannot edit this entry");
+            var gridview = $("#siteJournalGrid").data("kendoGrid");
+            gridview.dataSource.read();
+            return;
+
+        }
+
+        $(document).ready(function () {
+
+
+        var messageHub = $.connection.messageHub;
+        var userName = "@HttpContext.Current.User.Identity.Name";
+
+        $.connection.hub.qs = { 'userName': userName };
+        var popupNotification = $("#popupNotification").data("kendoNotification");
+
+        if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+        $.connection.hub.start().done(function () {//when the connection is ready,
+
+        popupNotification.show("Server Connection Established");
+        });
+        }
+
+        messageHub.client.send = function (message) {
+        if (message.messageType == "PM")
+        popupNotification.show(message.message);
+        };
+
+
+  });
+
+
+
+        $("#vertical").kendoSplitter({
+            orientation: "vertical",
+            panes: [
+                { collapsible: false, resizable: false }, // Controls parent vertical pane
+                { collapsible: false, size: "100px" }, //Controls bottom pane
+            ]
+        });
+
+        $("#horizontal").kendoSplitter({
+            panes: [
+                { collapsible: true, size: "20%" },
+                { collapsible: true, size: "70%" }
+            ]
+        });
+
+
+    </script>
+
+
+
+    
+
+
+

@@ -1,0 +1,73 @@
+﻿@model CMS_Web.Models.ExceptionEscallationDetail
+
+
+@Html.HiddenFor(model => model.ID)
+
+
+<div><span class="k-edit-label">Description : </span>
+    
+</div>
+
+<div>
+    <span class="k-edit-label">Hours before escallation :</span>
+    @(Html.Kendo().NumericTextBoxFor(m => m.HoursDelayBeforeEscallation)
+    .Name("HoursDelayBeforeEscallation")
+    .Format("#")
+     .HtmlAttributes(new { style = "margin-left:23px; margin-top:10px" })
+    .Min(0)
+    .Max(8760)
+    )
+</div>
+
+<div>
+    <span class="k-edit-label">Minutes before escallation :</span>
+    @(Html.Kendo().NumericTextBoxFor(m => m.MinutesDelayBeforeEscallation)
+    .Name("MinutesDelayBeforeEscallation")
+    .Format("#")
+     .HtmlAttributes(new { style = "margin-left:23px; margin-top:10px" })
+    .Min(0)
+    .Max(60)
+    )
+</div>
+
+<div><span class="k-edit-label">Next Staff :</span>
+   @(Html.Kendo().DropDownListFor(m => m.NextStaffID)
+            .Name("NextStaffID")
+            .DataValueField("ID")
+            .DataTextField("Name")
+            .BindTo("value:ID")
+            .OptionLabel("-")
+            .DataSource(source =>
+            {
+                source.Custom()
+                        .ServerFiltering(true)
+                        .Type("aspnetmvc-ajax") //Set this type if you want to use DataSourceRequest and ToDataSourceResult instances.
+                        .Transport(transport =>
+                        {
+                            transport.Read("getStaffFullName", "ToDo");
+                        })
+                        .Schema(schema =>
+                        {
+                            schema.Data("Data") //define the [data](http://docs.telerik.com/kendo-ui/api/javascript/data/datasource#configuration-schema.data) option
+                                .Total("Total"); //define the [total](http://docs.telerik.com/kendo-ui/api/javascript/data/datasource#configuration-schema.total) option
+                        });
+
+            })
+
+        .HtmlAttributes(new { style = "margin-left:23px; margin-top:10px" })
+        .AutoBind(true)
+        )
+</div>
+
+<div>
+    <span class="k-edit-label">Position :</span>
+    @(Html.Kendo().NumericTextBoxFor(m => m.Position)
+    .Name("Position")
+    .Format("#")
+     .HtmlAttributes(new { style = "margin-left:23px; margin-top:10px" })
+    .Min(1)
+    .Max(200)
+    )
+</div>
+
+

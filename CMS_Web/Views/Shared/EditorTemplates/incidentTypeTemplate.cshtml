@@ -1,0 +1,321 @@
+﻿@model CMS_Web.Models.IncidentType
+
+<table style="margin-left:70px">   
+    <tr>
+        <th class="k-edit-label" style="text-align:right; font-weight:normal; margin-left:0px">
+            Type :
+        </th>
+        <th class="k-edit-field" style="margin-left:0px">
+            <input name="Type" required class="k-textbox" />
+        </th>
+    </tr>
+</table>
+
+@(Html.HiddenFor(model => model.ID))
+
+<table>
+    <colgroup>
+        <col style="width:50%" />
+        <col style="width:50%" />
+    </colgroup>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            On Call Calendar :
+        </td>
+        <td>
+            @(Html.Kendo().CheckBoxFor(m => m.useOnCallProcessing)
+            .Name("useOnCallProcessing")
+            )
+        </td>
+    </tr>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            On Call Calendar :
+        </td>
+        <td class="k-edit-field" style="font-weight:normal">
+            @(Html.Kendo().DropDownListFor(m => m.onCallCalendarID)
+        .Name("onCallCalendarID")
+        .DataValueField("ID")
+        .DataTextField("Description")
+        .OptionLabel("-")
+        .AutoBind(true)
+        .DataSource(source =>
+        {
+            source.Custom()
+                    .ServerFiltering(true)
+                    .Type("aspnetmvc-ajax")
+                    .Transport(transport =>
+                    {
+                        transport.Read("GetOnCallCalendars", "OnCallCalendar");
+                    })
+                    .Schema(schema =>
+                    {
+                        schema.Data("Data")
+                            .Total("Total");
+                    });
+
+        })
+
+        .HtmlAttributes(new { style = "margin-left:-50px; margin-top:10px", data_value_primitive = "true" })
+
+            )
+        </td>
+    </tr>
+</table>
+
+<table>
+    <colgroup>
+        <col style="width:40%" />
+        <col style="width:20%" />
+        <col style="width:20%" />
+        <col style="width:20%" />
+    </colgroup>
+    <tr>
+        <th style="text-align:center; font-weight:normal"></th>
+        <th style="text-align:left; font-weight:normal">Days</th>
+        <th style="text-align:center; font-weight:normal">Hours</th>
+        <th style="text-align:center; font-weight:normal">Minutes</th>
+    </tr>
+    <tr>
+        <td new { style = "text-align:right" }>If this occurs, wait:</td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.firstEscDays)
+    .Name("firstEscDays")
+    .Format("#")
+    .HtmlAttributes(new { style = "width:80%; text-align:center" })
+    .Min(0)
+    .Max(365)
+            )
+        </td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.firstEscHours)
+    .Name("firstEscHours")
+    .Format("#")
+    .HtmlAttributes(new { style = "width:80%; text-align:center" })
+    .Min(0)
+    .Max(24)
+            )
+        </td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.firstEscMinutes)
+    .Name("firstEscMinutes")
+    .Format("#")
+    .HtmlAttributes(new { style = "width:80%; text-align:center" })
+    .Min(0)
+    .Max(60)
+                )
+        </td>
+    </tr>
+
+</table>
+
+<table>
+    <colgroup>
+        <col style="width:50%" />
+        <col style="width:50%" />
+    </colgroup>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            then notify:
+        </td>
+        <td class="k-edit-field" style="font-weight:normal">
+            @(Html.Kendo().DropDownListFor(m => m.firstStaffEscID)
+        .Name("firstStaffEscID")
+        .DataValueField("ID")
+        .DataTextField("Name")
+        .OptionLabel("-")
+        .AutoBind(true)
+        .DataSource(source =>
+        {
+            source.Custom()
+                    .ServerFiltering(true)
+                    .Type("aspnetmvc-ajax")
+                    .Transport(transport =>
+                    {
+                        transport.Read("getStaffFullName", "ToDo");
+                    })
+                    .Schema(schema =>
+                    {
+                        schema.Data("Data")
+                            .Total("Total");
+                    });
+
+        })
+
+        .HtmlAttributes(new { style = "margin-left:-50px; margin-top:10px", data_value_primitive = "true" })
+
+            )
+        </td>
+    </tr>
+</table>
+
+<table>
+    <colgroup>
+        <col style="width:40%" />
+        <col style="width:20%" />
+        <col style="width:20%" />
+        <col style="width:20%" />
+    </colgroup>
+    <tr>
+        <th style="text-align:center; font-weight:normal"></th>
+        <th style="text-align:center; font-weight:normal">Days</th>
+        <th style="text-align:center; font-weight:normal">Hours</th>
+        <th style="text-align:center; font-weight:normal">Minutes</th>
+    </tr>
+    <tr>
+        <td new { style="width:30%; text-align:right" }>if not actioned, wait:</td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.secondEscDays)
+    .Name("secondEscDays")
+    .Format("#")
+    .HtmlAttributes(new { style = "width:80%; text-align:center" })
+    .Min(0)
+    .Max(365)
+                )
+        </td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.secondEscHours)
+    .Name("secondEscHours")
+    .Format("#")
+    .HtmlAttributes(new { style = "width:80%; text-align:center" })
+    .Min(0)
+    .Max(24)
+                )
+        </td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.secondEscMinutes)
+    .Name("secondEscMinutes")
+    .Format("#")
+    .HtmlAttributes(new { style = "width:80%; text-align:center" })
+     .Min(0)
+    .Max(60)
+               )
+        </td>
+    </tr>
+
+</table>
+
+<table>
+    <colgroup>
+        <col style="width:50%" />
+        <col style="width:50%" />
+    </colgroup>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            then escalate to:
+        </td>
+        <td class="k-edit-field" style="font-weight:normal">
+            @(Html.Kendo().DropDownListFor(m => m.secondStaffEscID)
+        .Name("secondStaffEscID")
+        .DataValueField("ID")
+        .DataTextField("Name")
+        .OptionLabel("-")
+        .AutoBind(true)
+        .DataSource(source =>
+        {
+            source.Custom()
+                    .ServerFiltering(true)
+                    .Type("aspnetmvc-ajax")
+                    .Transport(transport =>
+                    {
+                        transport.Read("getStaffFullName", "ToDo");
+                    })
+                    .Schema(schema =>
+                    {
+                        schema.Data("Data")
+                            .Total("Total");
+                    });
+
+        })
+
+        .HtmlAttributes(new { data_value_primitive = "true", style = "margin-left:-50px; margin-top:10px"})
+
+            )
+        </td>
+    </tr>
+</table>
+
+ <table>
+    <colgroup>
+        <col style="width:40%" />
+        <col style="width:20%" />
+        <col style="width:20%" />
+        <col style="width:20%" />
+    </colgroup>
+    <tr>
+        <th style="text-align:center; font-weight:normal"></th>
+        <th style="text-align:center; font-weight:normal">Days</th>
+        <th style="text-align:center; font-weight:normal">Hours</th>
+        <th style="text-align:center; font-weight:normal">Minutes</th>
+    </tr>
+    <tr>
+        <td new { style="width:30%; text-align:right" }>if still not actioned, wait:</td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.thirdEscDays)
+    .Name("thirdEscDays")
+    .Format("#")
+    .HtmlAttributes(new { style = "width:80%; text-align:center" })
+    .Min(0)
+    .Max(365)
+                )
+        </td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.thirdEscHours)
+    .Name("thirdEscHours")
+    .Format("#")
+    .HtmlAttributes(new { style = "width:80%; text-align:center" })
+    .Min(0)
+    .Max(24)
+                )
+        </td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.thirdEscMinutes)
+    .Name("thirdEscMinutes")
+    .Format("#")
+    .HtmlAttributes(new { style = "width:80%; text-align:center" })
+     .Min(0)
+    .Max(60)
+               )
+        </td>
+    </tr>
+
+</table>
+
+<table>
+    <colgroup>
+        <col style="width:50%" />
+        <col style="width:50%" />
+    </colgroup>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            then escalate to:
+        </td>
+        <td class="k-edit-field" style="font-weight:normal">
+            @(Html.Kendo().DropDownListFor(m => m.thirdStaffEscID)
+        .Name("thirdStaffEscID")
+        .DataValueField("ID")
+        .DataTextField("Name")
+        .OptionLabel("-")
+        .DataSource(source =>
+        {
+            source.Custom()
+                    .ServerFiltering(true)
+                    .Type("aspnetmvc-ajax")
+                    .Transport(transport =>
+                    {
+                        transport.Read("getStaffFullName", "ToDo");
+                    })
+                    .Schema(schema =>
+                    {
+                        schema.Data("Data")
+                            .Total("Total");
+                    });
+
+        })
+
+        .HtmlAttributes(new { style = "margin-left:-50px; margin-top:10px", data_value_primitive = "true" })
+
+            )
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,150 @@
+﻿@model CMS_Web.ViewModels.ExtendedAccountModel
+
+@Html.HiddenFor(model => model.user.UserId)
+@Html.HiddenFor(model => model.roles, new { id = "Roles" })
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.UserName)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.UserName, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.UserName)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.FirstName)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.FirstName, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.FirstName)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.LastName)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.LastName, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.LastName)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.Address1)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.Address1, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.Address1)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.Address2)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.Address2, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.Address2)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.Suburb)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.Suburb, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.Suburb)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.State)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.State, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.State)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.Postcode)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.Postcode, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.Postcode)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.HomePhone)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.HomePhone, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.HomePhone)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.PrimaryMobilePhone)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.PrimaryMobilePhone, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.PrimaryMobilePhone)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.SecondaryMobilePhone)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.SecondaryMobilePhone, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.SecondaryMobilePhone)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.PrimaryEmail)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.PrimaryEmail, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.PrimaryEmail)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.SecondaryEmail)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.SecondaryEmail, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.SecondaryEmail)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.Inactive)
+</div>
+<div class="editor-field">
+    @Html.EditorFor(model => model.user.Inactive, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.Inactive)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.Note)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.Note, new { style = "width: inherit; height: 20px" })
+    @Html.ValidationMessageFor(model => model.user.Note)
+</div>
+
+<div class="editor-label">
+    @Html.LabelFor(model => model.user.IMEI_Number)
+</div>
+<div class="editor-field">
+    @Html.TextBoxFor(model => model.user.IMEI_Number, new { style = "width: inherit;" })
+    @Html.ValidationMessageFor(model => model.user.IMEI_Number)
+</div>
+<div class="editor-label">
+    Groups :
+</div>
+<div class="editor-field" style="color:black">
+    <b>@ViewBag.Groups</b>
+</div>
+
+<div class="editor-label">
+
+    @(Html.Kendo().MultiSelect()
+          .Events(e => { e.Change("onChange"); })
+          .Name("roles")
+          .Placeholder("Select User Roles")
+          .BindTo(Model.roles)
+          .Value(Model.roles)
+    )
+
+</div>

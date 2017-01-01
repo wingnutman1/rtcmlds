@@ -1,0 +1,220 @@
+﻿@model CMS_Web.Models.GlobalSettingsModel
+
+@{
+    ViewBag.Title = "Global Settings";
+}
+
+<p class="dataHeader">Global Settings</p>
+
+
+@(Html.Kendo().Notification()
+    .Name("popupNotification")
+)
+
+
+@using (Html.BeginForm())
+{
+    <div id="vertical">
+        <table>
+            <colgroup>
+                <col style="width:35%">
+                <col style="width:15%">
+                <col style="width:35%">
+                <col style="width:15%">
+            </colgroup>
+            <tr>
+                <td style="float:right; margin-top:4px">Days before shift to check qualifications :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.daysBeforeShiftToCheckQualifications)
+                        .Name("daysBeforeShiftToCheckQualifications")
+                        .Format("#")
+                        .Min(0)
+                        .Max(60)
+                    )
+                </td>
+                <td style="float:right; margin-top:4px">Hours between exception escalation :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.hoursBetweenExceptionEscallation)
+                        .Name("hoursBetweenExceptionEscallation")
+                        .Format("#")
+                        .Min(0)
+                        .Max(96)
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td style="float:right; margin-top:4px">Minutes staff may arrive for shift late :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.minutesAllowedForLateShiftArrival)
+                        .Name("minutesAllowedForLateShiftArrival")
+                        .Format("#")
+                        .Min(0)
+                        .Max(120)
+                    )
+                </td>
+                <td style="float:right; margin-top:4px">Minutes staff may leave shift early :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.minutesAllowedForEarlyShiftLeave)
+                        .Name("minutesAllowedForEarlyShiftLeave")
+                        .Format("#")
+                        .Min(0)
+                        .Max(120)
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td style="float:right; margin-top:4px">Minutes staff may be offline during shift :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.minutesAllowedForStaffOfflineDuringShift)
+                        .Name("minutesAllowedForStaffOfflineDuringShift")
+                        .Format("#")
+                        .Min(0)
+                        .Max(120)
+                    )
+                </td>
+                <td style="float:right; margin-top:4px">Minutes before shift to check if staff are online :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.minutesBeforeShiftToCheckIfStaffOnline)
+                        .Name("minutesBeforeShiftToCheckIfStaffOnline")
+                        .Format("#")
+                        .Min(0)
+                        .Max(120)
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td style="float:right; margin-top:4px">Days in general performance checking window :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.numberOfDaysDurationPerformanceMetricAnalysis)
+                        .Name("numberOfDaysDurationPerformanceMetricAnalysis")
+                        .Format("#")
+                        .Min(0)
+                        .Max(365)
+                    )
+                </td>
+                <td style="float:right; margin-top:4px">Days in ToDo task performace checking window :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.numberOfDaysDurationToDoPerformanceAnalysis)
+                        .Name("numberOfDaysDurationToDoPerformanceAnalysis")
+                        .Format("#")
+                        .Min(0)
+                        .Max(365)
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td style="float:right; margin-top:4px">ToDo List Completions Minimum % :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.minimumPercentToDoListCompletions)
+                        .Name("minimumPercentToDoListCompletions")
+                        .Format("#")
+                        .Min(0)
+                        .Max(100)
+                    )
+                </td>
+                <td style="float:right; margin-top:4px">On TimeShift Arrivals Minimum % :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.minimumPercentOnTimeShiftArrivals)
+                        .Name("minimumPercentOnTimeShiftArrivals")
+                        .Format("#")
+                        .Min(0)
+                        .Max(100)
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td style="float:right; margin-top:4px">Early Shift Leave Maximum % :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.maximumPercentEarlyShiftLeaving)
+                        .Name("maximumPercentEarlyShiftLeaving")
+                        .Format("#")
+                        .Min(0)
+                        .Max(100)
+                    )
+                </td>
+                <td style="float:right; margin-top:4px">Shift Cancellations Maximum % :</td>
+                <td>
+                    @(Html.Kendo().NumericTextBoxFor(m => m.maximumPercentShiftCancellations)
+                        .Name("maximumPercentShiftCancellations")
+                        .Format("#")
+                        .Min(0)
+                        .Max(100)
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td style="float:right; margin-top:4px">Staff To Recieve Performance Exceptions:</td>
+                <td>
+                    @(Html.Kendo().DropDownListFor(m => m.staffIDForPerformanceReporting)
+                            .Name("staffIDForPerformanceReporting")
+                            .DataValueField("ID")
+                            .DataTextField("Name")
+                            .OptionLabel("-")
+                            .AutoBind(true)
+                            .DataSource(source =>
+                            {
+                                source.Custom()
+                                        .ServerFiltering(true)
+                                        .Type("aspnetmvc-ajax")
+                                        .Transport(transport =>
+                                        {
+                                            transport.Read("getStaffFullName", "ToDo");
+                                        })
+                                        .Schema(schema =>
+                                        {
+                                            schema.Data("Data")
+                                                .Total("Total");
+                                        });
+
+                            }))
+                </td>
+            </tr>
+
+        </table>
+        <input type="submit" id="saveButton" name="command" value="Save" class="k-button" style="margin-top:10px"/>   
+    </div>
+}
+
+<style scoped>
+    #vertical {
+        height: 400px;
+        width: 1000px;
+        margin: 0 auto;
+    }
+</style>
+
+<!--Reference the SignalR library. -->
+<script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+<!--Reference the autogenerated SignalR hub script. -->
+<script src="/signalr/hubs"></script>
+
+<script>
+
+   
+
+    $(document).ready(function () {
+
+
+        var messageHub = $.connection.messageHub;
+        var userName = "@HttpContext.Current.User.Identity.Name";
+
+        $.connection.hub.qs = { 'userName': userName };
+        var popupNotification = $("#popupNotification").data("kendoNotification");
+
+        if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+            $.connection.hub.start().done(function () {//when the connection is ready,
+
+                popupNotification.show("Server Connection Established");
+            });
+        }
+
+        messageHub.client.send = function (message) {
+            if (message.messageType == "PM")
+                popupNotification.show(message.message);
+        };
+
+
+    });
+
+</script>
+

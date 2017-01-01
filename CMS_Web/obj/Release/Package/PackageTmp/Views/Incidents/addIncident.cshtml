@@ -1,0 +1,246 @@
+﻿@model CMS_Web.Models.Incident
+
+@{
+    ViewBag.Title = "AddIncident";
+}
+
+<p class="dataHeader">Add New Incident</p>
+
+
+
+@(Html.Kendo().Notification()
+    .Name("popupNotification")
+)
+<form method="post" action='@Url.Action("Add", new { newIncident = Model })'>
+    <div id="vertical">
+
+        <table>
+            <colgroup>
+                <col style="width:25%">
+                <col style="width:25%">
+                <col style="width:25%">
+                <col style="width:25%">
+            </colgroup>
+            <tr>
+                <td align="right" , class="k-label">
+                    Date Incident Occured :
+                </td>
+                <td align="left" , class="k-content">
+                    @(Html.Kendo().DateTimePickerFor(m => m.incidentDate)
+                    .Name("incidentDate")
+                    .Value(DateTime.Now)
+                    .Max(DateTime.Now)
+                    )
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td align="right" , class="k-label">
+                    Incident Type:
+                </td>
+                <td align="left">
+                    @(Html.Kendo().DropDownListFor(m => m.TypeID)
+                    .Name("TypeID")
+                    .DataValueField("ID")
+                    .DataTextField("Type")
+                    .OptionLabel("-")
+                    .DataSource(source =>
+                    {
+                        source.Custom()
+                                .ServerFiltering(true)
+                                .Type("aspnetmvc-ajax")
+                                .Transport(transport =>
+                                {
+                                    transport.Read("GetIncidentTypes", "Incidents");
+                                })
+                                .Schema(schema =>
+                                {
+                                    schema.Data("Data")
+                                        .Total("Total");
+                                });
+
+                    })
+                    .Events(e => e.Select("onIncidentTypeSelect"))
+                    .HtmlAttributes(new { style = "width:100%", data_value_primitive = "true" })
+                    )
+                </td>
+                <td align="right" , class="k-label">
+                    Incident Involved Staff :
+                </td>
+                <td align="left">
+                    @(Html.Kendo().DropDownListFor(m => m.UserProfileID)
+                    .Name("UserProfileID")
+                    .DataValueField("ID")
+                    .DataTextField("Name")
+                    .OptionLabel("-")
+                    .DataSource(source =>
+                    {
+                        source.Custom()
+                                .ServerFiltering(true)
+                                .Type("aspnetmvc-ajax")
+                                .Transport(transport =>
+                                {
+                                    transport.Read("getStaffFullName", "ToDo");
+                                })
+                                .Schema(schema =>
+                                {
+                                    schema.Data("Data")
+                                        .Total("Total");
+                                });
+
+                    })
+                    .HtmlAttributes(new { style = "width:100%", data_value_primitive = "true" })
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td align="right" , class="k-label">
+                    Incident Involved Client :
+                </td>
+                <td align="left">
+                    @(Html.Kendo().DropDownListFor(m => m.ClientID)
+                    .Name("ClientID")
+                    .DataValueField("ID")
+                    .DataTextField("Name")
+                    .OptionLabel("-")
+                    .DataSource(source =>
+                    {
+                        source.Custom()
+                                .ServerFiltering(true)
+                                .Type("aspnetmvc-ajax")
+                                .Transport(transport =>
+                                {
+                                    transport.Read("getClientFullName", "ToDo");
+                                })
+                                .Schema(schema =>
+                                {
+                                    schema.Data("Data")
+                                        .Total("Total");
+                                });
+
+                    })
+                    .HtmlAttributes(new { style = "width:100%", data_value_primitive = "true" })
+                    )
+                </td>
+                <td align="right" , class="k-label">
+                    Incident occured at site :
+                </td>
+                <td align="left">
+                    @(Html.Kendo().DropDownListFor(m => m.LocationID)
+                    .Name("LocationID")
+                    .DataValueField("ID")
+                    .DataTextField("Name")
+                    .OptionLabel("-")
+                    .DataSource(source =>
+                    {
+                        source.Custom()
+                                .ServerFiltering(true)
+                                .Type("aspnetmvc-ajax")
+                                .Transport(transport =>
+                                {
+                                    transport.Read("getSites", "ToDo");
+                                })
+                                .Schema(schema =>
+                                {
+                                    schema.Data("Data")
+                                        .Total("Total");
+                                });
+
+                    })
+                    .HtmlAttributes(new { style = "width:100%", data_value_primitive = "true" })
+                    )
+                </td>
+            </tr>
+        </table>
+
+        <table style="margin-left:115px">
+            <colgroup>
+                <col style="width:20%">
+                <col style="width:auto">
+            </colgroup>
+            <tr>
+                <td align="right" valign="top" class="k-label">
+                    Description of Incident :
+                </td>
+                <td>
+                    @(Html.TextAreaFor(m => m.Description, htmlAttributes: new { style = "width:147%", @class = "k-textbox", rows = "5" }))
+                </td>
+            </tr>
+        </table>
+
+
+        <input type="submit" value="Add" class="k-button k-primary" style="margin-top:10px; margin-left:245px" />
+
+
+        <table style="margin-left:115px">
+            <colgroup>
+                <col style="width:20%">
+                <col style="width:auto">
+            </colgroup>
+            <tr>
+                <td align="right" valign="top" class="k-label">Escalation sequence :</td>
+                <td id="escSequ"></td>
+            </tr>
+            <tr>
+                <td align="right" valign="top" class="k-label">Template Files :</td>
+                <td id="tempFiles"></td>
+            </tr>
+
+        </table>
+    </div>
+</form>
+
+<style scoped>
+    #vertical {
+        height: 600px;
+        width: 1000px;
+        margin: 0 auto;
+    }
+</style>
+
+<!--Reference the SignalR library. -->
+<script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+<!--Reference the autogenerated SignalR hub script. -->
+<script src="/signalr/hubs"></script>
+
+<script>
+
+    function onIncidentTypeSelect(e) {        
+        
+        var dataItem = this.dataItem(e.item);
+
+        $.post('@Url.Action("getIncidentTypeTemplateFiles","Incidents")', { ID:dataItem.ID }, function(data) {
+            document.getElementById("tempFiles").innerHTML = data;
+        });
+        
+        $.post('@Url.Action("getEscList", "Incidents")', { ID: dataItem.ID }, function (data) {
+            document.getElementById("escSequ").innerHTML = data;
+        });
+       
+    }
+
+    $(document).ready(function () {
+
+
+        var messageHub = $.connection.messageHub;
+        var userName = "@HttpContext.Current.User.Identity.Name";
+
+        $.connection.hub.qs = { 'userName': userName };
+        var popupNotification = $("#popupNotification").data("kendoNotification");
+
+        if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+            $.connection.hub.start().done(function () {//when the connection is ready,
+
+                popupNotification.show("Server Connection Established");
+            });
+        }
+
+        messageHub.client.send = function (message) {
+            if (message.messageType == "PM")
+                popupNotification.show(message.message);
+        };
+
+
+    });
+</script>

@@ -1,0 +1,359 @@
+﻿
+
+@{
+    ViewBag.Title = "Summary";
+}
+
+<p class="dataHeader">Summary</p>
+
+
+@(Html.Kendo().Notification()
+    .Name("popupNotification")
+)
+  
+
+@using (Html.BeginForm())
+{
+
+    CMS_Web.Helpers.Data dh = new CMS_Web.Helpers.Data();
+
+    var exceptionText = "";
+    var openExceptions = dh.openExceptionCount();
+    var emailText = "";
+    var unreadEmails = dh.unreadMessageCount();
+    var toDoText = "";
+    var toDoCount = dh.incompleteToDoItemCount();
+    var overdueToDoText = "";
+    var overdueToDoCount = dh.overdueToDoItemCount();
+    var incidentText = "";
+    var incidentCount = dh.getOpenIncidentCount();
+    var overdueIncidentText = "";
+    var overdueIncidentCount = dh.getOverdueOpenIncidentCount();
+
+
+    exceptionText = "" + openExceptions;
+    emailText = "" + unreadEmails;
+    toDoText = "" + toDoCount;
+    overdueToDoText = "" + overdueToDoCount;
+    overdueIncidentText = "" + overdueIncidentCount;
+    incidentText = "" + incidentCount;
+
+
+    <div id="vertical">
+        <div id="top-pane">
+            <div style="text-align:center; font-size:x-large;"><B>Personal</B></div>
+                    <table>
+                        <colgroup>
+                            <col style="width:166px" />
+                            <col style="width:166px" />
+                            <col style="width:166px" />
+                            <col style="width:166px" />
+                            <col style="width:166px" />
+                            <col style="width:166px" />
+                        </colgroup>
+                        <tr>
+                            <td style="margin-left:20px; margin-top:40px; text-align:center">
+                                Open Exceptions
+                            </td>
+                            <td style="margin-left:20px; margin-top:40px; text-align:center">
+                                Open Incidents
+                            </td>
+                            <td style="margin-left:20px; margin-top:40px; text-align:center">
+                                Incidents Overdue
+                            </td>
+                            <td style="margin-left:20px; margin-top:40px; text-align:center">
+                                Unread Messages
+                            </td>
+                            <td style="margin-left:20px; margin-top:40px; text-align:center">
+                                Tasks To Do
+                            </td>
+                            <td style="margin-left:20px; margin-top:40px; text-align:center">
+                                Tasks Overdue
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td style="margin-left:20px; margin-top:20px; text-decoration:underline; text-align:center; font-size:x-large">
+                                @Html.ActionLink(exceptionText, "MyOpenExceptions", "Exceptions")
+                            </td>
+                            <td style="margin-left:20px; margin-top:20px; text-decoration:underline; text-align:center; font-size:x-large">
+                                @Html.ActionLink(incidentText, "MyOpenIncidents", "Incidents")
+                            </td>
+                            <td style="margin-left:20px; margin-top:20px; text-decoration:underline; text-align:center; font-size:x-large">
+                                @Html.ActionLink(overdueIncidentText, "MyOpenIncidents", "Incidents")
+                            </td>
+                            <td style="margin-left:20px; margin-top:20px; text-decoration:underline; text-align:center; font-size:x-large">
+                                @Html.ActionLink(emailText, "Index", "Messaging")
+                            </td>
+                            <td style="margin-left:20px; margin-top:20px; text-decoration:underline; text-align:center; font-size:x-large">
+                                @Html.ActionLink(toDoText, "myToDo", "ToDo")
+                            </td>
+                            <td style="margin-left:20px; margin-top:20px; text-decoration:underline; text-align:center; font-size:x-large">
+                                @Html.ActionLink(overdueToDoText, "myToDo", "ToDo")
+                            </td>
+                        </tr>   
+                    </table>
+                    <hr style="margin-left:40px; margin-right:40px" />
+                    <div style="text-align:center; font-size:x-large;"><B>The Organisation</B></div>
+                    <table>
+                        <colgroup>
+                            <col style="width:200px" />
+                            <col style="width:400px" />
+                            <col style="width:400px" />
+                        </colgroup>
+                       
+                        
+                        
+                         <tr>
+                             <td>
+                                 @(Html.Kendo().Chart()
+                                    .Name("ToDo")
+                                    .Title("Task Completion")
+                                    .Legend(legend => legend
+                                        .Position(ChartLegendPosition.Top)
+                                    )
+                                    .ChartArea(chartArea => chartArea
+                                        .Background("transparent")
+                                    )
+                                    .Series(series =>
+                                    {
+                                        series.Column(new double[] { (double)ViewData["toDoCompletionRateAll"] }).Name("All").Color("DodgerBlue");
+                                        series.Column(new double[] { (double)ViewData["toDoCompletionRateSubordinates"]}).Name("Team").Color("RoyalBlue");
+                                        series.Column(new double[] { (double)ViewData["toDoCompletionRateMe"]}).Name("Me").Color("Blue");
+                                    })
+                                    .CategoryAxis(axis => axis
+                                        .Name("series-axis")
+                                        .Line(line => line.Visible(false))
+                                    )
+                                    //.CategoryAxis(axis => axis
+                                    //    .Name("label-axis")
+                                    //    .Categories("To Do Complete")
+                                    //)
+                                    .ValueAxis(axis => axis
+                                        .Numeric()
+                                            .Labels(labels => labels.Format("{0}%"))
+                                            // Move the label-axis all the way down the value axis
+                                            .AxisCrossingValue(0, int.MinValue)
+                                    )
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                        .Format("{0}%")
+                                        .Template("#= series.name #: #= value #")
+                                    )
+                                 )
+                                 
+                             </td>
+                             <td>
+                                 @(Html.Kendo().Chart()
+                                    .Name("Incidents")
+                                    .Title("Incidents")
+                                    .Legend(legend => legend
+                                        .Position(ChartLegendPosition.Top)
+                                    )
+                                    .ChartArea(chartArea => chartArea
+                                        .Background("transparent")
+                                    )
+                                    .Series(series =>
+                                    {
+                                        series.Column(new int[] { (int)ViewData["incidentsRaisedLastMonth"] }).Name("Raised LM").Color("Salmon");
+                                        series.Column(new int[] { (int)ViewData["incidentsClosedLastMonth"] }).Name("Closed LM").Color("SpringGreen");
+                                        series.Column(new int[] { (int)ViewData["incidentsRaisedThisMonth"] }).Name("Raised TM").Color("Crimson");
+                                        series.Column(new int[] { (int)ViewData["incidentsClosedThisMonth"] }).Name("Closed TM").Color("Green");
+                                        series.Column(new int[] { (int)ViewData["OpenIncidents"] }).Name("Open").Color("Red");
+                                    })
+                                    .CategoryAxis(axis => axis
+                                        .Name("series-axis")
+                                        .Line(line => line.Visible(false))
+                                    )
+                                    //.CategoryAxis(axis => axis
+                                    //    .Name("label-axis")
+                                    //    .Categories("Incidents")
+                                    //)
+                                    .ValueAxis(axis => axis
+                                        .Numeric()
+                                            .Labels(labels => labels.Format("{0}"))
+                                            // Move the label-axis all the way down the value axis
+                                            .AxisCrossingValue(0, int.MinValue)
+                                    )
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                        .Format("{0}")
+                                        .Template("#= series.name #: #= value #")
+                                    )
+                                 )
+                             </td>
+                             <td>
+                                 @(Html.Kendo().Chart()
+                                    .Name("Exceptions")
+                                    .Title("Exceptions")
+                                    .Legend(legend => legend
+                                        .Position(ChartLegendPosition.Top)
+                                    )
+                                    .ChartArea(chartArea => chartArea
+                                        .Background("transparent")
+                                    )
+                                    .Series(series =>
+                                    {
+                                        series.Column(new int[] { (int)ViewData["exceptionsRaisedLastMonth"] }).Name("Raised LM").Color("Salmon");
+                                        series.Column(new int[] { (int)ViewData["exceptionsClosedLastMonth"] }).Name("Closed LM").Color("SpringGreen");
+                                        series.Column(new int[] { (int)ViewData["exceptionsRaisedThisMonth"] }).Name("Raised TM").Color("Crimson");
+                                        series.Column(new int[] { (int)ViewData["exceptionsClosedThisMonth"] }).Name("Closed TM").Color("Green");
+                                        series.Column(new int[] { (int)ViewData["OpenExceptions"] }).Name("Open").Color("Red");
+                                    })
+                                    .CategoryAxis(axis => axis
+                                        .Name("series-axis")
+                                        .Line(line => line.Visible(false))
+                                    )
+                                    //.CategoryAxis(axis => axis
+                                    //    .Name("label-axis")
+                                    //    .Categories("Incidents")
+                                    //)
+                                    .ValueAxis(axis => axis
+                                        .Numeric()
+                                            .Labels(labels => labels.Format("{0}"))
+                                            // Move the label-axis all the way down the value axis
+                                            .AxisCrossingValue(0, int.MinValue)
+                                    )
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                        .Format("{0}")
+                                        .Template("#= series.name #: #= value #")
+                                    )
+                                 )
+
+                             </td>
+                        </tr>
+                    </table>
+            <div style="text-align:center; font-size:small;">TM = This Month.  LM = Last Month.</div>
+
+        </div>
+         <div id="bottom-pane">
+            <div class="pane-content">
+                    
+                 <p class="summaryHeader">News</p>
+
+                 This is the news.  Standby for breaking stories...                       
+                
+            </div>
+        </div>
+    </div>
+    
+    @(Html.Kendo().Window()
+    .Name("notificationWindow")
+    .Visible(false)
+    )
+
+}
+
+
+
+
+ 
+
+    <style scoped>
+        #vertical {
+            height: 700px;
+            width: 1000px;
+            margin: 0 auto;
+        }
+
+        .rootfolder { background-position: 0 0; }
+        .folder { background-position: 0 -16px; }
+        .pdf { background-position: 0 -32px; }
+        .html { background-position: 0 -48px; }
+        .image { background-position: 0 -64px; }
+       
+        #middle-pane { background-color: rgba(60, 70, 80, 0.10); }
+        #bottom-pane { 
+            background-color: rgba(60, 70, 80, 0.15);
+            overflow: hidden;
+            }
+        #left-pane, #center-pane, #right-pane  { background-color: rgba(60, 70, 80, 0.05); }
+
+        .pane-content {
+            padding: 10px 10px;
+        }
+
+
+    </style>
+}
+     
+ <!--Reference the jQuery library. -->
+    @*<script src="/Scripts/jquery-1.8.2.min.js" ></script>*@
+    <!--Reference the SignalR library. -->
+    <script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+    <!--Reference the autogenerated SignalR hub script. -->
+    <script src="/signalr/hubs"></script>
+
+
+
+
+
+@section Scripts {
+
+    <script type="text/x-kendo-tmpl" id="template">
+        <div class="listViewFormat">
+                #= Name#  
+        </div>
+    </script>
+
+
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
+   
+
+}
+
+
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+        var messageHub = $.connection.messageHub;
+        var userName = "@HttpContext.Current.User.Identity.Name";
+
+        $.connection.hub.qs = { 'userName': userName };
+        var popupNotification = $("#popupNotification").data("kendoNotification");
+
+        if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+        $.connection.hub.start().done(function () {//when the connection is ready,
+
+        popupNotification.show("Server Connection Established");
+        });
+        }
+
+        messageHub.client.send = function (message) {
+        if (message.messageType == "PM")
+        popupNotification.show(message.message);
+        };
+
+
+  });
+
+
+
+        $("#vertical").kendoSplitter({
+            orientation: "vertical",
+            panes: [
+                { collapsible: false, resizable: false }, // Controls parent vertical pane
+                { collapsible: false, size: "100px" }, //Controls bottom pane
+            ]
+        });
+
+        $("#horizontal").kendoSplitter({
+            panes: [
+                { collapsible: true, size: "50%" },
+                { collapsible: true, size: "50%" }
+        ]
+        });
+
+
+    </script>
+
+
+
+    
+
+
+

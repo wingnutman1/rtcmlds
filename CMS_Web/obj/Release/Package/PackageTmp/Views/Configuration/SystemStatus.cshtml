@@ -1,0 +1,269 @@
+﻿@model CMS_Web.Models.SystemStatus
+
+@{
+    ViewBag.Title = "System Status";
+}
+
+<p class="dataHeader">System Status</p>
+
+
+@(Html.Kendo().Notification()
+    .Name("popupNotification")
+)
+
+
+<div id="vertical">
+    <table>
+        <colgroup>
+            <col style="width:10%">
+            <col style="width:7%">
+            <col style="width:30%">
+            <col style="width:30%">
+        </colgroup>
+        <tr>
+            <th align="left">Engine</th>
+            <th align="left">Running</th>
+            <th align="left">Status</th>
+            <th align="left">Actions</th>
+        </tr>
+        <tr>
+            <td>Incident Engine</td>
+            <td>
+            @{ if (Model.incidentEngineEnabled)
+            {
+                        <span style="color:green">Running</span>
+                    }
+                    else
+                    {
+                        <span style="color:red">Stopped</span>
+                    }
+            }
+            </td>
+            <td>@Model.incidentEngineStatus</td>
+            <td>
+               @(Html.Kendo().Button()
+                    .Name("incidentEngineStart")
+                    .Content("Start")
+                    .HtmlAttributes(new { type = "button" })
+                    .Events(ev => ev.Click("onClickIncidentEngineStart")))
+                @(Html.Kendo().Button()
+                    .Name("incidentEngineStop")
+                    .Content("Stop")
+                    .HtmlAttributes(new { type = "button" })
+                    .Events(ev => ev.Click("onClickIncidentEngineStop")))
+            </td>
+        </tr>
+        <tr>
+            <td>ToDo Engine</td>
+            <td>
+                @{ if (Model.todoEngineEnabled)
+            {
+                        <span style="color:green">Running</span>
+                    }
+                    else
+                    {
+                        <span style="color:red">Stopped</span>
+                    }
+                }
+            </td>
+            <td>@Model.todoEngineStatus</td>
+            <td>
+                @(Html.Kendo().Button()
+                    .Name("todoEngineStart")
+                    .Content("Start")
+                    .HtmlAttributes(new { type = "button" })
+                    .Events(ev => ev.Click("onClickToDoEngineStart")))
+                @(Html.Kendo().Button()
+                    .Name("todoEngineStop")
+                    .Content("Stop")
+                    .HtmlAttributes(new { type = "button" })
+                    .Events(ev => ev.Click("onClickToDoEngineStop")))
+            </td>
+        </tr>
+        <tr>
+            <td>Exception Engine</td>
+            <td>
+                @{ if (Model.exceptionEngineEnabled)
+            {
+                        <span style="color:green">Running</span>
+                    }
+                    else
+                    {
+                        <span style="color:red">Stopped</span>
+                    }
+                }
+            </td>
+            <td>@Model.exceptionEngineStatus</td>
+
+            <td>
+                @(Html.Kendo().Button()
+                    .Name("exceptionEngineStart")
+                    .Content("Start")
+                    .HtmlAttributes(new { type = "button" })
+                    .Events(ev => ev.Click("onClickExceptionEngineStart")))
+                @(Html.Kendo().Button()
+                    .Name("exceptionEngineStop")
+                    .Content("Stop")
+                    .HtmlAttributes(new { type = "button" })
+                    .Events(ev => ev.Click("onClickExceptionEngineStop")))
+            </td>
+        </tr>
+     </table>
+
+    <p class="dataHeader" style="margin-top:0px">Import Rosters</p>
+    @(Html.Kendo().Button()
+                    .Name("importRosters")
+                    .Content("Import")
+                    .HtmlAttributes(new { type = "button" })
+                    .Events(ev => ev.Click("onClickImportRosters")))
+
+    <p class="dataHeader" style="margin-top:0x">Roster Import Errors</p>
+
+    @(Html.Kendo().Grid<CMS_Web.Models.RosterImportErrorDetail>()
+                .Name("rosterImportErrors")
+                .Columns(columns =>
+                {
+                    columns.Bound(p => p.ImportDate).Title("Date").Width("20%").Format("{0:dd/MM/yyyy hh:mm:ss.ff tt}"); ;
+                    columns.ForeignKey(p => p.StaffID, (System.Collections.IEnumerable)ViewData["UserProfiles"], "UserID", "FullName").Title("User").Width("10%");
+                    columns.Bound(p => p.ErrorDetail).Title("Description").Width("70%");
+                })
+                .Selectable()
+                .Pageable()
+                .Sortable()
+                .Scrollable()
+                .Filterable()
+                .HtmlAttributes(new { style = "height:500px; margin-top:20px" })
+                .DataSource(dataSource => dataSource.Ajax()
+                    .Sort(x => x.Add("ImportDate").Descending())
+                    .Model(model => model.Id(p => p.ID))
+                    .Read(read => read.Action("GetRosterImportErrors", "Roster"))
+
+                )
+                .Resizable(resize => resize.Columns(true))
+
+    )
+
+    <p class="dataHeader" style="margin-top:0px ">System Log</p>
+
+    @(Html.Kendo().Grid<CMS_Web.Models.SystemLogEntry>()
+                .Name("systemLog")
+                .Columns(columns =>
+                {
+                    columns.Bound(p => p.EventDate).Title("Date").Width("20%").Format("{0:dd/MM/yyyy hh:mm:ss.ff tt}"); ;
+                    columns.ForeignKey(p => p.StaffID, (System.Collections.IEnumerable)ViewData["UserProfiles"], "UserID", "FullName").Title("User").Width("10%");
+                    columns.Bound(p => p.Description).Title("Description").Width("25%");
+                    columns.Bound(p => p.LogType).Title("Type").Width("10%");
+                    columns.Bound(p => p.module).Title("Module").Width("15%");
+                    columns.Bound(p => p.function).Title("Function").Width("20%");
+
+                })
+                .Selectable()
+                .Pageable()
+                .Sortable()
+                .Scrollable()
+                .Filterable()
+                .HtmlAttributes(new { style = "height:500px; margin-top:20px; margin-bottom:20px" })
+                .DataSource(dataSource => dataSource.Ajax()
+                    .Sort(x => x.Add("EventDate").Descending())
+                    .Model(model => model.Id(p => p.ID))
+                    .Read(read => read.Action("GetSystemLog", "Configuration"))
+
+                )
+                .Resizable(resize => resize.Columns(true))
+
+    )
+    
+</div>
+
+
+<style scoped>
+    #vertical {
+        /*height: 800px;*/
+        width: 1000px;
+        margin: 0 auto;
+    }
+</style>
+
+<!--Reference the SignalR library. -->
+<script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+<!--Reference the autogenerated SignalR hub script. -->
+<script src="/signalr/hubs"></script>
+
+<script>
+
+    function onClickImportRosters(e) {
+        $.post('@Url.Action("updateRosters", "Roster")');
+        setTimeout(updateSystemStatusPage, 500);
+
+    }
+
+    function onClickIncidentEngineStart(e) {
+        $.post('@Url.Action("incidentEngineStart","Configuration")');
+        setTimeout(updateSystemStatusPage, 500);
+        
+    }
+
+    function onClickIncidentEngineStop(e) {
+        $.post('@Url.Action("incidentEngineStop","Configuration")');
+        setTimeout(updateSystemStatusPage, 500);
+
+        
+    }
+
+    function onClickToDoEngineStart(e) {
+        $.post('@Url.Action("todoEngineStart","Configuration")');
+        setTimeout(updateSystemStatusPage, 500);
+
+    }
+
+    function onClickToDoEngineStop(e) {
+        $.post('@Url.Action("todoEngineStop","Configuration")');
+        setTimeout(updateSystemStatusPage, 500);
+
+
+    }
+    function onClickExceptionEngineStart(e) {
+        $.post('@Url.Action("exceptionEngineStart","Configuration")');
+        setTimeout(updateSystemStatusPage, 500);
+
+    }
+
+    function onClickExceptionEngineStop(e) {
+        $.post('@Url.Action("exceptionEngineStop","Configuration")');
+        setTimeout(updateSystemStatusPage, 500);
+
+
+    }
+
+    function updateSystemStatusPage()
+    {
+        var url = '@Url.Action("SystemStatus", "Configuration")';
+        window.location.href = url;
+    }
+
+    $(document).ready(function () {
+
+
+        var messageHub = $.connection.messageHub;
+        var userName = "@HttpContext.Current.User.Identity.Name";
+
+        $.connection.hub.qs = { 'userName': userName };
+        var popupNotification = $("#popupNotification").data("kendoNotification");
+
+        if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+            $.connection.hub.start().done(function () {//when the connection is ready,
+
+                popupNotification.show("Server Connection Established");
+            });
+        }
+
+        messageHub.client.send = function (message) {
+            if (message.messageType == "PM")
+                popupNotification.show(message.message);
+        };
+
+
+    });
+
+</script>
+

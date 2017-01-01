@@ -1,0 +1,247 @@
+﻿@model CMS_Web.ViewModels.ExtendedAccountModel
+
+@{ViewBag.Title = "Edit User";}
+
+<h2 class="dataHeader">Edit User</h2>
+
+@(Html.Kendo().Notification()
+    .Name("popupNotification")
+)
+
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset class="dataDetails">
+
+        <table>
+            @Html.HiddenFor(model => model.user.UserId)
+            @Html.HiddenFor(model => model.roles, new { id = "Roles" })
+
+            <colgroup>
+                <col style="width:25%" />
+                <col style="width:25%" />
+                <col style="width:25%" />
+                <col style="width:25%" />
+            </colgroup>
+
+            <tr>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.UserName)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.UserName, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.UserName)
+                </td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.PositionDescription)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.PositionDescription, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.PositionDescription)
+                </td>
+            </tr>
+            <tr>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.FirstName)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.FirstName, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.FirstName)
+                </td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.LastName)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.LastName, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.LastName)
+                </td>
+            </tr>
+            <tr>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.Address1)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.Address1, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.Address1)
+                </td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.Address2)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.Address2, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.Address2)
+                </td>
+            </tr>
+            <tr>
+
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.Suburb)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.Suburb, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.Suburb)
+                </td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.State)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.State, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.State)
+                </td>
+            </tr>
+            <tr>
+
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.Postcode)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.Postcode, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.Postcode)
+                </td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.HomePhone)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.HomePhone, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.HomePhone)
+                </td>
+            </tr>
+            <tr>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.PrimaryMobilePhone)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.PrimaryMobilePhone, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.PrimaryMobilePhone)
+                </td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.SecondaryMobilePhone)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.SecondaryMobilePhone, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.SecondaryMobilePhone)
+                </td>
+            </tr>
+            <tr>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.PrimaryEmail)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.PrimaryEmail, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.PrimaryEmail)
+                </td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.SecondaryEmail)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.SecondaryEmail, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.SecondaryEmail)
+                </td>
+            </tr>
+            <tr>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.Inactive)
+                </td>
+                <td class="editor-field">
+                    @Html.EditorFor(model => model.user.Inactive, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.Inactive)
+                </td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.Note)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.Note, new { style = "width: inherit; height: 20px" })
+                    @Html.ValidationMessageFor(model => model.user.Note)
+                </td>
+
+            </tr>
+            <tr>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.IMEI_Number)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.IMEI_Number, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.IMEI_Number)
+                </td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.available)
+                </td>
+                <td class="editor-field">
+                    @Html.EditorFor(model => model.user.available, new { style = "width: inherit;" })
+                    @Html.ValidationMessageFor(model => model.user.available)
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="editor-label" style="float:right">
+                    @Html.LabelFor(model => model.user.availablityStatus)
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.user.Note, new { style = "width: inherit; height: 20px" })
+                    @Html.ValidationMessageFor(model => model.user.availablityStatus)
+                </td>
+            </tr>
+            <tr><td><br /></td></tr>
+            <tr>
+                <td class="editor-label" style="float:right">Roles:</td>
+                <td style="column-width:500px">
+                    @(Html.Kendo().MultiSelect()
+                        .Events(e => { e.Change("onChange"); })
+                        .Name("roles")
+                        .Placeholder("Select roles ...")
+                        .BindTo(ViewBag.AllRoles)
+                        .Value(Model.roles)
+                    )
+                </td>
+                <td> </td>
+                <td></td>
+            </tr>
+        </table>
+        <p style="float:right">
+            <input class="k-button" type="submit" value="Save" />
+            <span class="k-button">
+                @Html.ActionLink("Back to List", "ListUsers")
+            </span>
+        </p>
+       </fieldset>
+       <br />
+}
+
+<!--Reference the SignalR library. -->
+<script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+<!--Reference the autogenerated SignalR hub script. -->
+<script src="/signalr/hubs"></script>
+
+<script>
+    $(document).ready(function () {
+
+        var messageHub = $.connection.messageHub;
+        var userName = "@HttpContext.Current.User.Identity.Name";
+
+        $.connection.hub.qs = { 'userName': userName };
+        var popupNotification = $("#popupNotification").data("kendoNotification");
+
+        if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+            $.connection.hub.start().done(function () {//when the connection is ready,
+
+                popupNotification.show("Server Connection Established");
+            });
+        }
+
+        messageHub.client.send = function (message) {
+            if (message.messageType == "PM")
+                popupNotification.show(message.message);
+        };
+
+    });
+
+    function onChange() {
+        var roles = $("#required").data("kendoMultiSelect").value();
+
+        $("#Roles").val(roles);
+    }
+
+</script>

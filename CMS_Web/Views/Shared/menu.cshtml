@@ -1,0 +1,20 @@
+﻿
+<div id="menu">
+   
+ @if (Request.IsAuthenticated)
+ {
+     var dataHelper = new CMS_Web.Helpers.Data();
+     var stafFullName = dataHelper.getStaffFullName(WebSecurity.CurrentUserId);   
+
+     <div id="username">
+            Logged in as : @stafFullName (@User.Identity.Name)
+     </div>
+                 
+     
+     @(Html.Kendo().Menu()
+                .Name("MainMenu")
+                .BindTo("CMSWeb")
+                )           
+        }
+
+</div>

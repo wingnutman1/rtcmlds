@@ -1,0 +1,16 @@
+﻿ @model  CMS_Web.Models.ToDoListItem
+
+<!--//Define the escallation name popup template -->
+@using (Html.BeginForm())
+{
+    <div class="k-edit-label">Complete: </div>
+    <div class="k-edit-field">
+        @(Html.Kendo().CheckBoxFor(m => m.Complete)
+            .Name("Complete")
+        )
+    </div>
+    <div class="k-edit-label">Note: </div>
+    <div class="k-edit-field">
+        <input name="CompletedNote" required class="k-textbox"/>
+    </div>
+}

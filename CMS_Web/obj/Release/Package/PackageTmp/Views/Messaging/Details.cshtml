@@ -1,0 +1,71 @@
+﻿@model CMS_Web.Models.MESSAGE_DETAILS
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>MESSAGE_DETAILS</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SenderStaff)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SenderStaff)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RecipientStaff)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RecipientStaff)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SendDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SendDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ReadDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReadDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MessageText)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MessageText)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MessageRead)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MessageRead)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.TimeToRead)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TimeToRead)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ReadTimeOut)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReadTimeOut)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

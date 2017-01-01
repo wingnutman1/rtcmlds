@@ -1,0 +1,346 @@
+﻿
+@model IEnumerable<CMS_Web.Models.ToDoListRecurringItem>
+
+@{
+    ViewBag.Title = "Clients ToDo List Template";
+}
+
+<p class="dataHeader">Clients ToDo List Template</p>
+
+
+@(Html.Kendo().Notification()
+    .Name("popupNotification")
+)
+
+@using (Html.BeginForm())
+{
+
+    <div id="vertical">
+        <div id="top-pane">
+            <div id="horizontal" style="height: 100%; width: 100%;">
+                <div id="left-pane">
+                        <div class="messagesUserList">
+                            @(Html.Kendo().ListView<CMS_Web.ViewModels.clientSelectorModel>()
+                                .Name("clientList")
+                                .TagName("div")
+                                .Navigatable()
+                                .Pageable()
+                                .ClientTemplateId("template")
+                                .Selectable(select => select.Mode(ListViewSelectionMode.Single))
+                                .DataSource(dataSource => dataSource
+                                    .Read(read => read.Action("getClients", "ToDo")
+                                    )
+                                )
+                                .Events(e => e
+                                    .Change("onClientSelect")
+                                )
+
+                            )
+
+                        </div>
+                    </div>                        
+                <div id="right-pane">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        @(Html.Kendo().Grid<CMS_Web.Models.ToDoListRecurringItem>()
+                            .Name("clientRecurringToDoGrid")
+                            .Columns(columns =>
+                            {
+                                columns.Bound(p => p.Task).Title("ToDo Task").Width("61%");
+                                columns.Bound(p => p.DayOfWeek).Title("Day").Width("15%");
+                                columns.Command(c => c.Edit()).Width("12%");
+                                columns.Command(c => c.Destroy()).Width("12%");
+                            })
+                            .ToolBar(toolbar => toolbar.Create())
+                            .Editable(editable => editable.Mode(GridEditMode.PopUp))
+                            .Pageable()
+                            .Sortable()
+                            .Scrollable()
+                            .Filterable()
+                            .HtmlAttributes(new { style = "height:99%;" })
+                            .DataSource(dataSource => dataSource.Ajax()
+                                .Model(model => model.Id(p => p.ID))
+                                .Read(read => read.Action("GetClientRecurringToDoTask", "ToDo").Data("selectedClient"))
+                                .Create(update => update.Action("clientsRecurringToDoEditingInline_Create", "ToDo").Data("selectedClient"))
+                                .Update(update => update.Action("clientsRecurringToDoEditingInline_Update", "ToDo").Data("selectedClient"))
+                                .Destroy(update => update.Action("clientsRecurringToDoEditingInline_Destroy", "ToDo"))
+                            )
+                            .Resizable(resize => resize.Columns(true))
+                        )
+                    }
+                    else
+                    {
+                        @(Html.Kendo().Grid<CMS_Web.Models.ToDoListRecurringItem>()
+                            .Name("clientRecurringToDoGrid")
+                            .Columns(columns =>
+                            {
+                                columns.Bound(p => p.Task).Title("ToDo Task").Width("61%");
+                                columns.Bound(p => p.DayOfWeek).Title("Day").Width("15%");
+                                columns.Command(c => c.Edit()).Width("12%");
+                            })
+                            .ToolBar(toolbar => toolbar.Create())
+                            .Editable(editable => editable.Mode(GridEditMode.PopUp))
+                            .Pageable()
+                            .Sortable()
+                            .Scrollable()
+                            .Filterable()
+                            .HtmlAttributes(new { style = "height:99%;" })
+                            .DataSource(dataSource => dataSource.Ajax()
+                                .Model(model => model.Id(p => p.ID))
+                                .Read(read => read.Action("GetClientRecurringToDoTask", "ToDo").Data("selectedClient"))
+                                .Create(update => update.Action("clientsRecurringToDoEditingInline_Create", "ToDo").Data("selectedClient"))
+                                .Update(update => update.Action("clientsRecurringToDoEditingInline_Update", "ToDo").Data("selectedClient"))
+                            )
+                            .Resizable(resize => resize.Columns(true))
+                        )
+                    }
+                </div>
+            </div>
+        </div>
+     <div id="bottom-pane">
+            <div class="pane-content">
+                    
+                 
+                       Allocate ToDo List to staff : 
+                       
+                       @(Html.Kendo().DropDownList()
+                          .Name("staffToAllocate")
+                          .DataValueField("ID")
+                          .DataTextField("Name")
+                          .DataSource(source =>
+                          {
+                              source.Custom()
+                                      .ServerFiltering(true)
+                                      .Type("aspnetmvc-ajax") //Set this type if you want to use DataSourceRequest and ToDataSourceResult instances.
+                                      .Transport(transport =>
+                                      {
+                                          transport.Read("getStaffFullName", "ToDo");
+                                      })
+                                      .Schema(schema =>
+                                      {
+                                          schema.Data("Data") //define the [data](http://docs.telerik.com/kendo-ui/api/javascript/data/datasource#configuration-schema.data) option
+                                              .Total("Total"); //define the [total](http://docs.telerik.com/kendo-ui/api/javascript/data/datasource#configuration-schema.total) option
+                                      });
+                          })
+                        .HtmlAttributes(new { style = "width: 30%" })
+                        )
+                     
+                        Date to allocate tasks to : 
+                      
+                         @(Html.Kendo().DatePicker()
+                            .Name("datepicker") //The name of the DatePicker is mandatory. It specifies the "id" attribute of the widget.
+                            .Value(DateTime.Today + new TimeSpan(1, 0, 0, 0)) //Set the value of the DatePicker.
+                        )
+
+                        @(Html.Kendo().Button()
+                            .Name("textButton")
+                            .Content("Allocate")
+                            .Icon("tick")
+                            .HtmlAttributes(new { type = "button" })
+
+                            .Events(ev => ev.Click("onClick")))
+                       
+                
+            </div>
+        </div>
+    </div>
+    
+    @(Html.Kendo().Window()
+    .Name("notificationWindow")
+    .Visible(false)
+    )
+
+
+}
+
+
+
+
+ 
+
+    <style scoped>
+        #vertical {
+            height: 600px;
+            width: 1000px;
+            margin: 0 auto;
+        }
+
+        .rootfolder { background-position: 0 0; }
+        .folder { background-position: 0 -16px; }
+        .pdf { background-position: 0 -32px; }
+        .html { background-position: 0 -48px; }
+        .image { background-position: 0 -64px; }
+       
+        #middle-pane { background-color: rgba(60, 70, 80, 0.10); }
+        #bottom-pane { background-color: rgba(60, 70, 80, 0.15); }
+        #left-pane, #center-pane, #right-pane  { background-color: rgba(60, 70, 80, 0.05); }
+
+        .pane-content {
+            padding: 10px 10px;
+        }
+
+
+    </style>
+}
+
+<!--Reference the SignalR library. -->
+<script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+<!--Reference the autogenerated SignalR hub script. -->
+<script src="/signalr/hubs"></script>
+
+<script type="text/x-kendo-tmpl" id="template">
+    <div class="listViewFormat">
+            #= FirstName# #= LastName# 
+    </div>
+</script>
+
+    <script>
+        function selectedClient() {
+
+            var list = $("#clientList").data("kendoListView");
+            if (list != null) {
+                var index = list.select().index();
+                if (index != -1) {
+                    var dataItem = list.dataSource.view()[index];
+                    var user = dataItem.ID;
+                    return {
+                        userID: user
+                    };
+                }
+                else
+                    return {
+                        userID: 0
+                    };
+            }
+            else
+                return {
+                    userID: 0
+                };
+        }
+
+    </script>
+
+    <script>
+
+        function onClientSelect() {
+
+            var gridview = $("#clientRecurringToDoGrid").data("kendoGrid");
+            gridview.dataSource.read();
+            return;
+        }
+
+        function onUpdate() {
+            alert("Sorry, you cannot edit this entry");
+            var gridview = $("#clientRecurringToDoGrid").data("kendoGrid");
+            gridview.dataSource.read();
+            return;
+
+        }
+    </script>
+
+ <script>
+     function onClick(e) {
+
+         e.preventDefault();
+
+         var list = $("#clientList").data("kendoListView");
+         var index = list.select().index();
+         var siteItem = list.dataSource.view()[index];
+
+         if (index != -1) {
+             var staffList = $("#staffToAllocate").data("kendoDropDownList");
+             var staffIndex = staffList.dataItem().ID;
+             var staffItem = staffList.dataItem();
+             var selectedTargetDate = $("#datepicker").data("kendoDatePicker").value();
+             if (staffIndex != -1) {
+                 var url = '@Url.Action("AllocateToDoToStaffFromClient", "ToDo")';
+
+                    $("#divProcessing").show();
+
+                    $.post(url, { selectedStaff: staffItem.ID, selectedToDoTemplate: siteItem.ID, targetDate: selectedTargetDate.toUTCString() })
+                            .done(function (data) {
+                                $("#divProcessing").hide();
+
+                                var notificationWidow = $("#notificationWindow").data("kendoWindow");
+                                notificationWidow.content(data);
+                                notificationWidow.title("Hey!");
+                                notificationWidow.center().open();
+
+                            })
+
+                            .fail(function (jqXHR, status, error) {
+                                alert(error + "\r\n" + jqXHR.responseText);
+                                $("#divProcessing").hide();
+                            });
+
+
+                    //alert("Staff Index:" + staffItem.ID + " Staff Name: " + staffItem.Name + " Site Index:" + siteItem.ID + " Site Name:" + siteItem.Name);
+                }
+                else {
+                    var notificationWidow = $("#notificationWindow").data("kendoWindow");
+                    notificationWidow.content("<p>Please select a Client.</p>");
+                    notificationWidow.title("Error!");
+                    notificationWidow.center().open();
+                }
+            }
+            else {
+                var notificationWidow = $("#notificationWindow").data("kendoWindow");
+                notificationWidow.content("<p>Please select a Client.</p>");
+                notificationWidow.title("Error!");
+                notificationWidow.center().open();
+            }
+        }
+    </script>
+   
+
+    <script type="text/javascript">
+
+  $(document).ready(function () {
+
+
+        var messageHub = $.connection.messageHub;
+        var userName = "@HttpContext.Current.User.Identity.Name";
+
+        $.connection.hub.qs = { 'userName': userName };
+        var popupNotification = $("#popupNotification").data("kendoNotification");
+
+        if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+        $.connection.hub.start().done(function () {//when the connection is ready,
+
+        popupNotification.show("Server Connection Established");
+        });
+        }
+
+        messageHub.client.send = function (message) {
+        if (message.messageType == "PM")
+        popupNotification.show(message.message);
+        };
+
+
+  });
+
+
+        $("#vertical").kendoSplitter({
+            orientation: "vertical",
+            panes: [
+                { collapsible: false, resizable: false }, // Controls parent vertical pane
+                { collapsible: false, size: "50px" }, //Controls bottom pane
+            ]
+        });
+
+        $("#horizontal").kendoSplitter({
+            panes: [
+                { collapsible: true, size: "20%" },
+                { collapsible: true, size: "70%" }
+            ]
+        });
+
+
+    </script>
+
+
+
+    
+
+
+

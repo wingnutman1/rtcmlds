@@ -1,0 +1,85 @@
+﻿@model CMS_Web.Models.OnCallCalendarItem
+
+@(Html.HiddenFor(model => model.ID))
+
+<table>
+    <colgroup>
+        <col style="width:50%" />
+        <col style="width:50%" />
+    </colgroup>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            On Call Staff Member:
+        </td>
+        <td class="k-edit-field" style="font-weight:normal">
+            @(Html.Kendo().DropDownListFor(m => m.staffID)
+        .Name("staffID")
+        .DataValueField("ID")
+        .DataTextField("Name")
+        .OptionLabel("-")
+        .AutoBind(true)
+        .DataSource(source =>
+        {
+            source.Custom()
+                    .ServerFiltering(true)
+                    .Type("aspnetmvc-ajax")
+                    .Transport(transport =>
+                    {
+                        transport.Read("getStaffFullName", "ToDo");
+                    })
+                    .Schema(schema =>
+                    {
+                        schema.Data("Data")
+                            .Total("Total");
+                    });
+
+        })
+
+        .HtmlAttributes(new { style = "margin-left:-75px; margin-top:10px", data_value_primitive = "true" })
+
+            )
+        </td>
+    </tr>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            On Call Start Date:
+        </td>
+        <td>
+            @(Html.Kendo().DatePickerFor(m => m.dateStart)
+                .Name("dateStart")
+                .Min(DateTime.Now)
+            )
+        </td>
+    </tr>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            On Call End Date:
+        </td>
+        <td>
+            @(Html.Kendo().DatePickerFor(m => m.dateEnd)
+                .Name("dateEnd")
+                .Min(DateTime.Now)
+            )
+        </td>
+    </tr>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            On Call Start Time:
+        </td>
+        <td>
+            @(Html.Kendo().TimePickerFor(m => m.timeStart)
+                .Name("timeStart")
+            )
+        </td>
+    </tr>
+    <tr>
+        <td style="width:30%; text-align:right; margin-left:5px; font-weight:normal">
+            On Call End Time:
+        </td>
+        <td>
+            @(Html.Kendo().TimePickerFor(m => m.timeEnd)
+                .Name("timeEnd")
+            )
+        </td>
+    </tr>
+</table>

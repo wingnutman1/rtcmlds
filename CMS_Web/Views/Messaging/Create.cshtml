@@ -1,0 +1,92 @@
+﻿@model CMS_Web.Models.MESSAGE_DETAILS
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>MESSAGE_DETAILS</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SenderStaff)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SenderStaff)
+            @Html.ValidationMessageFor(model => model.SenderStaff)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RecipientStaff)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.RecipientStaff)
+            @Html.ValidationMessageFor(model => model.RecipientStaff)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SendDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SendDate)
+            @Html.ValidationMessageFor(model => model.SendDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ReadDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ReadDate)
+            @Html.ValidationMessageFor(model => model.ReadDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.MessageText)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.MessageText)
+            @Html.ValidationMessageFor(model => model.MessageText)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.MessageRead)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.MessageRead)
+            @Html.ValidationMessageFor(model => model.MessageRead)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.TimeToRead)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TimeToRead)
+            @Html.ValidationMessageFor(model => model.TimeToRead)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ReadTimeOut)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ReadTimeOut)
+            @Html.ValidationMessageFor(model => model.ReadTimeOut)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

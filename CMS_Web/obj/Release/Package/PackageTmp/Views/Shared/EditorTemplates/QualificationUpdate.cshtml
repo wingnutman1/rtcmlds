@@ -1,0 +1,20 @@
+﻿@model CMS_Web.Models.StaffQualification
+
+<div>
+    <span class="k-edit-label">Renewal Date :</span>
+    @(Html.Kendo().DatePickerFor(m => m.RenewalDate)
+        .Format("{0:dd/MM/yyyy}")
+        .Name("RenewalDate")
+        .HtmlAttributes(new { style = "margin-left:23px; margin-top:10px" })
+    )
+</div>
+
+<div>
+    <span class="k-edit-label">Expiry Date :</span>
+    @(Html.Kendo().DatePickerFor(m => m.ExpiryDate)
+        .Format("{0:dd/MM/yyyy}")
+        .Name("ExpiryDate")
+        .HtmlAttributes(new { style = "margin-left:23px; margin-top:10px" })
+        .Min(DateTime.Now)
+    )
+</div>
